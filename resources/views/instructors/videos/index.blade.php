@@ -12,12 +12,6 @@
                     <h2>Video Manager</h2>
                 </div>
 
-                @php $firstLesson = $lessons->first();   @endphp
-                <video controls autoplay>
-                    <source src="{{ asset($firstLesson->content_path) }}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-
                 <div class="card-body">
                     <!-- List of Chapters with Video Lessons -->
                     @foreach($chapters as $chapter)
