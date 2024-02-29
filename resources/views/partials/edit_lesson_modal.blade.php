@@ -17,10 +17,10 @@
                         <input type="text" class="form-control" id="editedLessonTitle{{ $content->id }}" name="editedTitle" value="{{ $content->title }}" required>
                     </div>
 
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="editedLessonVideoUrl{{ $content->id }}" class="form-label">Video URL</label>
                         <input type="text" class="form-control" id="editedLessonVideoUrl{{ $content->id }}" name="editedVideoUrl" value="{{ $content->content_path }}" required>
-                    </div>
+                    </div> --}}
 
                     <div class="mb-3">
                         <label for="editedLessonDuration{{ $content->id }}" class="form-label">Duration</label>

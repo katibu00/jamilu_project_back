@@ -209,9 +209,8 @@ class CourseContentController extends Controller
         $validatedData = $request->validate([
             'contentId' => 'required|exists:contents,id',
             'editedTitle' => 'required|string|max:255',
-            'editedVideoUrl' => 'required|url',
-            'editedDuration' => 'required|string|max:50',
-            'editedOrder' => 'required|integer', // Add validation for the order number
+            'editedDuration' => 'required|string',
+            'editedOrder' => 'required|integer', 
         ]);
 
         // Find the lesson by contentId
@@ -219,7 +218,6 @@ class CourseContentController extends Controller
 
         // Update lesson details
         $lesson->title = $validatedData['editedTitle'];
-        $lesson->content_path = $validatedData['editedVideoUrl'];
         $lesson->duration = $validatedData['editedDuration'];
         $lesson->order_number = $validatedData['editedOrder']; // Update the order number
 

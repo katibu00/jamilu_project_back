@@ -6,8 +6,7 @@
 
           <div class="row">
 
-              @include('layouts.sidebar')
-
+             
               <div class="col-lg-9 col-md-9 col-sm-12">
 
                   <!-- Row -->

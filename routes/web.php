@@ -176,7 +176,7 @@ Route::post('/submit-quiz', [StudentController::class, 'submitExam'])->middlewar
 Route::group(['prefix' => 'videos', 'middleware' => ['auth']], function () {
 
 
-Route::get('/', [VideoController::class, 'index'])->name('videos.index');
+Route::get('/index', [VideoController::class, 'index'])->name('videos.index');
 Route::post('/upload', [VideoController::class, 'upload'])->name('videos.upload');
 Route::delete('/{id}', [VideoController::class, 'delete'])->name('videos.delete');
 
