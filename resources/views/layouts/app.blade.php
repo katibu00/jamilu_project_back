@@ -54,7 +54,9 @@
 
         <!-- Top Bar
 		============================================= -->
-		@include('layouts.topbar')
+		@guest
+			@include('layouts.topbar')
+		@endguest
 
 		<!-- Header
 		============================================= -->

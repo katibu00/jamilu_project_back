@@ -240,7 +240,7 @@
                                         <div class="d-flex justify-content-between align-items-center mt-2">
                                             <span class="badge bg-primary">{{ $course->language }}</span>
                                             <a href="{{ route('course.detail', ['slug' => $course->slug]) }}"
-                                                class="btn btn-outline-primary stretched-link">Enroll now</a>
+                                                class="btn btn-outline-primary stretched-link">More Details</a>
                                         </div>
                                     </div>
                                 </div>

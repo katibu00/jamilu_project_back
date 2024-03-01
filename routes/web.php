@@ -26,13 +26,24 @@ use App\Http\Controllers\VideoController;
 
 Route::get('/', [PagesController::class, 'home'])->name('homepage');
 
+Route::get('/home', function(){
+    if(auth()->user()->role == 'instructor')
+    {
+       return redirect()->route('home.instructor');
+    }
+    if(auth()->user()->role == 'student')
+    {
+       return redirect()->route('home.student');
+    }
+});
 
 
 
-Route::get('/register', [AuthenticationController::class, 'registerIndex'])->name('register');
+
+Route::get('/register', [AuthenticationController::class, 'registerIndex'])->name('register')->middleware('guest');
 Route::post('/register', [AuthenticationController::class, 'register']);
 
-Route::get('/login', [AuthenticationController::class, 'loginIndex'])->name('login');
+Route::get('/login', [AuthenticationController::class, 'loginIndex'])->name('login')->middleware('guest');
 Route::post('/login', [AuthenticationController::class, 'login']);
 Route::get('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 
@@ -67,9 +78,6 @@ Route::group(['prefix' => 'student', 'middleware' => ['auth']], function () {
     Route::post('/submit-review', [StudentController::class, 'submitReview'])->name('submit-review');
 
     Route::get('/fetch-reviews', [StudentController::class, 'fetchReviews'])->name('fetch-reviews');
-
-
-
 
 });
 
@@ -115,6 +123,7 @@ Route::group(['prefix' => 'courses', 'middleware' => ['auth']], function () {
     Route::put('/{course}/update-content', [CourseContentController::class, 'updateContent'])->name('courses.update-content');
 
 
+    Route::get('/{course}/manage-lessons', [VideoController::class, 'index'])->name('courses.manage-lessons');
 
     //////////////////////////
 
@@ -176,7 +185,6 @@ Route::post('/submit-quiz', [StudentController::class, 'submitExam'])->middlewar
 Route::group(['prefix' => 'videos', 'middleware' => ['auth']], function () {
 
 
-Route::get('/index', [VideoController::class, 'index'])->name('videos.index');
 Route::post('/upload', [VideoController::class, 'upload'])->name('videos.upload');
 Route::delete('/{id}', [VideoController::class, 'delete'])->name('videos.delete');
 

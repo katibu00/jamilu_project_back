@@ -2,16 +2,32 @@
 @section('pageTitle','Login')
 @section('content')
 
+<style>
+    @media (max-width: 767.98px) {
+  /* Styles for screens smaller than or equal to 767.98px (mobile phones) */
+  .bg-white-on-mobile {
+    background-color: white;
+  }
+}
+</style>
+
 <section id="content">
     <div class="content-wrap py-0">
 
         <div class="section m-0 py-6">
-            <div class="acurve-bg"></div>
+            <div class="qcurve-bg"></div>
             <div class="container d-flex justify-content-center align-items-center">
-
-                <div class="cs-signin-form">
+                
+                <div class="cs-signin-form bg-white-on-mobile">
                     <div class="cs-signin-form-inner">
                         <div class="text-center">
+                            @if (session('error'))
+                                <div class="container">
+                                    <div class="alert alert-danger">
+                                        {{ session('error') }}
+                                    </div>
+                                </div>
+                            @endif
                             <h3 class="h1 fw-bolder mb-3">Sign In</h3>
                             <p class="text-smaller text-muted mb-4" style="line-height: 1.5;">Sign in to Access your courses and continue your learning</p>
                         </div>
@@ -33,7 +49,7 @@
 
                         <form id="login-form" class="mb-0 row" action="{{ route('login') }}" method="post">
                             @csrf
-                            <input type="hidden" name="return_url" value="{{ $returnUrl }}">
+                            <input type="hidden" name="return_url" id="return_url" value="{{ $returnUrl }}">
 
                             <div class="col-12 form-group">
                                 <label class="text-transform-none ls-0 fw-normal mb-1" for="login-form-username">Email/Phone:</label>
@@ -87,6 +103,8 @@
              '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...'
          );
 
+         var redirect_url = $("#return_url").val();
+        // console.log(redirect_url); return;
          var formData = new FormData(this);
          $.ajax({
              url: '/login',
@@ -101,13 +119,13 @@
                      Swal.fire({
                          icon: 'success',
                          title: 'Login Successful',
-                         text: 'Redirecting to dashboard...',
+                         text: 'Redirecting ...',
                          timer: 2000,
                          timerProgressBar: true,
                          showConfirmButton: false,
                          didOpen: () => {
                              setTimeout(() => {
-                                window.location.href = response.redirect_url;
+                                window.location.href = redirect_url;
                              }, 500);
                          }
                      });

@@ -55,7 +55,7 @@ class PagesController extends Controller
     {
         // Check if the user is authenticated
         if (!Auth::check()) {
-            return redirect()->route('login', ['return_to' => route('course.buy.process', ['slug' => $slug], false)])
+            return redirect()->route('login', ['return_to' => route('course.buy', ['slug' => $slug], false)])
                 ->with('error', 'Please log in to continue your transaction.');
         }
     

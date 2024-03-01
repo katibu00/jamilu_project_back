@@ -84,6 +84,11 @@
                                                                 <i class="fas fa-pen"></i> Edit Content
                                                             </a>
                                                         </li>
+                                                        <li>
+                                                            <a href="{{ route('courses.manage-lessons', $course->id) }}" class="dropdown-item">
+                                                                <i class="fas fa-play"></i> Manage Video Lessons
+                                                            </a>
+                                                        </li>
                                                         <li><a class="dropdown-item"
                                                                 href="{{ route('courses.edit', $course->id) }}">
                                                                 <i class="fas fa-edit"></i> Edit Course

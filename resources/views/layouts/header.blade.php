@@ -6,8 +6,8 @@
                 <!-- Logo
                 ============================================= -->
                 <div id="logo">
-                    <a href="demo-forum.html">
-                        <img class="logo-default" srcset="/assets/demos/forum/images/canvasforum.png, /assets/demos/forum/images/canvasforum@2x.png 2x" src="/assets/demos/forum/images/canvasforum@2x.png" alt="Canvas Logo">
+                    <a href="{{ route('homepage') }}">
+                        <img class="logo-default" srcset="/logo1.png, /logo1.png 2x" src="/logo1.png"  alt="Skillify Logo">
                     </a>
                 </div><!-- #logo end -->
 
@@ -33,20 +33,20 @@
                         <div class="dropdown-menu dropdown-menu-end py-0 m-0 overflow-auto" aria-labelledby="notifylink" style="width: 320px; max-height: 300px">
                             <span class="dropdown-header border-bottom border-f5 fw-medium text-uppercase ls-1">Notifications</span>
                             <div class="list-group list-group-flush">
-                                <a href="#" class="d-flex list-group-item">
+                                {{-- <a href="#" class="d-flex list-group-item">
                                     <img src="/assets/demos/articles/images/authors/2.jpg" width="35" height="35" class="rounded-circle me-3 mt-1" alt="Profile">
                                     <div class="media-body">
                                         <h5 class="my-0 fw-normal text-muted"><span class="text-dark fw-bold">SemiColonWeb</span> has replied on your post <span class="text-dark fw-bold">Package Generator – Approx time for a file.</span></h5>
                                         <small class="text-smaller">10 mins ago</small>
                                     </div>
-                                </a>
-                                <a href="#" class="d-flex list-group-item">
+                                </a> --}}
+                                {{-- <a href="#" class="d-flex list-group-item">
                                     <i class="bi-check-lg badge-icon bg-success text-white me-3 mt-1"></i>
                                     <div class="media-body">
                                         <h5 class="my-0 fw-normal text-muted"><span class="text-dark fw-bold">SemiColonWeb</span> has marked to your post as solved.</h5>
                                         <small class="text-smaller">2 days ago</small>
                                     </div>
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                     </div>
@@ -54,10 +54,10 @@
                     <!-- Top Account
                     ============================================= -->
                     <div class="header-misc-icon profile-image">
-                        <a href="#" id="profilelink" data-bs-toggle="dropdown" data-bs-offset="0,15" aria-haspopup="true" aria-expanded="false" data-offset="12,12"><img class="rounded-circle" src="/assets/demos/forum/images/user.png" alt="User"></a>
+                        <a href="#" id="profilelink" data-bs-toggle="dropdown" data-bs-offset="0,15" aria-haspopup="true" aria-expanded="false" data-offset="12,12"><img class="rounded-circle" src="{{ Auth::user()->profile_image ? asset('/'.Auth::user()->profile_image) : asset('/uploads/default.png') }}"  alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end py-0 m-0" aria-labelledby="profilelink">
                             <a class="dropdown-item" href="demo-forum-edit.html"><i class="bi-pencil-square me-2"></i>Edit Profile</a>
-                            <a class="dropdown-item" href="demo-forum-single.html"><i class="bi-text-left me-2"></i>Your Topics</a>
+                            {{-- <a class="dropdown-item" href="demo-forum-single.html"><i class="bi-text-left me-2"></i>Your Topics</a> --}}
                             <a class="dropdown-item" href="{{ route('logout') }}"><i class="bi-box-arrow-right me-2"></i>Sign Out</a>
                         </div>
                     </div>
@@ -74,6 +74,11 @@
                 <!-- Primary Navigation
                 ============================================= -->
                 <nav class="primary-menu">
+
+                    @php
+                        $prefix = Request::route()->getPrefix();
+                        $route = Route::current()->getName();
+                    @endphp
 
                   @auth
                       @if(auth()->user()->role == 'instructor')

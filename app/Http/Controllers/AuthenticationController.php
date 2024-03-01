@@ -189,7 +189,7 @@ class AuthenticationController extends Controller
     public function loginIndex(Request $request)
     {
         $returnUrl = $request->query('return_to', '/');
-        
+        // dd($returnUrl);
         // dd($returnUrl);
         return view('auth.login', compact('returnUrl'));
     }
@@ -197,7 +197,7 @@ class AuthenticationController extends Controller
 
     protected function getRedirectUrl(Request $request)
     {
-        return $request->input('return_url', $this->getRedirectRoute($request));
+        return $request->query('return_url', $this->getRedirectRoute($request));
     }
 
 public function login(Request $request)

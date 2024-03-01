@@ -75,8 +75,10 @@
                 <div class="tab-content" id="courseTabsContent">
                     <!-- Overview -->
                     <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                        <div class="card-body">
-                            <span class="card-text">{!! $course->description !!}</span>
+                        <div class="card">
+                            <div class="card-body">
+                                <span class="card-text">{!! $course->description !!}</span>
+                            </div>
                         </div>
                     </div>
                     <!-- Curriculum -->
@@ -132,23 +134,20 @@
 
                     <!-- Instructor -->
                     <div class="tab-pane fade" id="instructor" role="tabpanel" aria-labelledby="instructor-tab">
-                        <div class="card-body">
-                            <h2 class="card-title">Meet Your Instructor</h2>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <!-- Instructor Image -->
-                                    <img src="instructor-image.jpg" class="img-fluid rounded-circle" alt="Instructor Image">
-                                </div>
-                                <div class="col-md-8">
-                                    <!-- Instructor Name -->
-                                    <h3 class="card-subtitle mb-3">John Doe</h3>
-                                    <!-- Instructor Bio -->
-                                    <p class="card-text">John Doe is a web developer and instructor with over 10 years of
-                                        experience. He has taught thousands of students online and offline, and helped them
-                                        achieve their web development goals. He is passionate about sharing his knowledge
-                                        and skills with others, and making web development fun and easy to learn. He
-                                        specializes in front-end development, using HTML, CSS, JavaScript, and Bootstrap. He
-                                        also has experience in back-end development, using PHP, MySQL, and Laravel.</p>
+                        <h2 class="card-title mb-1">Meet the Instructor</h2>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <!-- Instructor Image -->
+                                        <img src="{{ asset($course->instructor->profile_image ? $course->instructor->profile_image : 'uploads/default.png') }}" class="img-fluid rounaded-circle" width="100" height="100" alt="Instructor Image">
+                                    </div>
+                                    <div class="col-md-10">
+                                        <!-- Instructor Name -->
+                                        <h3 class="card-subtitle mb-3">{{ $course->instructor->name }}</h3>
+                                        <!-- Instructor Bio -->
+                                        <p class="card-text">{!! $course->instructor->profile->biography !!}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -234,23 +233,28 @@
                             </div>
                         </div>
                         <!-- Course Price -->
-                        <div class="d-flex align-items-center mb-4">
-                            <!-- Discounted Price -->
-                            <h2 class="card-title me-3">$19.99</h2>
-                            <!-- Original Price -->
-                            <h4 class="card-subtitle text-muted text-decoration-line-through">$49.99</h4>
-                        </div>
+                        @if ($course->is_free)
+                            <h2 class="card-title me-3">FREE</h2>
+                        @elseif($course->has_discount)
+                            <div class="d-flex align-items-center mb-4">
+                                <h2 class="card-title me-3">&#8358;{{ number_format($course->discount_price) }} </h2>
+                                <h4 class="card-subtitle text-muted text-decoration-line-through">&#8358;{{ number_format($course->price) }}</h4>
+                            </div>
+                        @else
+                            <h2 class="card-title me-3">&#8358;{{ number_format($course->price) }}</h2>
+                        @endif
+
                         <!-- Course Details -->
                         <ul class="list-group list-group-flush mb-4">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <!-- Number of Lessons -->
                                 <span><i class="fas fa-book-open me-2"></i> Lessons</span>
-                                <span class="badge bg-primary rounded-pill">8</span>
+                                <span class="badge bg-primary rounded-pill">{{ $lessonCount }}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <!-- Number of Quizzes -->
                                 <span><i class="fas fa-pen me-2"></i> Quizzes</span>
-                                <span class="badge bg-primary rounded-pill">4</span>
+                                <span class="badge bg-primary rounded-pill">{{ $quizCount }}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <!-- Number of Students -->
@@ -260,7 +264,7 @@
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <!-- Skill Level -->
                                 <span><i class="fas fa-graduation-cap me-2"></i> Skill Level</span>
-                                <span class="badge bg-primary rounded-pill">Intermediate</span>
+                                <span class="badge bg-primary rounded-pill">{{ $course->level }}</span>
                             </li>
                         </ul>
                         
@@ -277,7 +281,6 @@
 
 @section('js')
 
-    <!-- Initialize Magnific Popup -->
     <script>
         $(document).ready(function() {
             $('.magnific-popup').magnificPopup({

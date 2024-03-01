@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Course;
-use App\Models\Chapter;
+
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -13,7 +12,6 @@ use Illuminate\Support\Facades\Storage;
 use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
 use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
 use App\Models\Content; 
-use Illuminate\Support\Str;
 
 class VideoController extends Controller
 {
@@ -21,31 +19,19 @@ class VideoController extends Controller
      /**
      * @return Application|Factory|View
      */
-    public function index()
+    public function index($courseId)
     {
-        // Get the currently authenticated user (instructor)
         $user = Auth::user();
-
-        // Get the first course created by the instructor
-        $course = $user->courses()->first();
-
-        // If instructor has no courses, redirect or return an error message
-        if (!$course) {
-            return redirect()->route('dashboard')->with('error', 'You have no courses yet.');
-            // You can replace 'dashboard' with the appropriate route
-        }
-
-        // Fetch chapters of the course with their associated contents (video lessons)
+        $course = $user->courses()->findOrFail($courseId);
+    
         $chapters = $course->chapters()->with(['contents' => function ($query) {
             $query->where('content_type', 'lessons');
         }])->get();
-
+    
         $lessons = $course->lessons()->where('content_type', 'lessons')->get();
-
-
-        return view('instructors.videos.index', compact('chapters','lessons'));
+    
+        return view('instructors.videos.index', compact('chapters', 'lessons'));
     }
-
 
 
 
