@@ -47,19 +47,19 @@ class AuthenticationController extends Controller
             ]);
 
             // Get the Monnify access token
-            $accessToken = $this->getAccessToken();
+            // $accessToken = $this->getAccessToken();
 
             // Create Monnify reserved account
-            $monnifyReservedAccount = $this->createMonnifyReservedAccount($user, $accessToken);
+            // $monnifyReservedAccount = $this->createMonnifyReservedAccount($user, $accessToken);
 
             // Save user and Monnify account details
             $user->save();
-            ReservedAccount::create([
-                'user_id' => $user->id,
-                'customer_email' => $monnifyReservedAccount->customerEmail,
-                'customer_name' => $monnifyReservedAccount->customerName,
-                'accounts' => json_encode($monnifyReservedAccount->accounts),
-            ]);
+            // ReservedAccount::create([
+            //     'user_id' => $user->id,
+            //     'customer_email' => $monnifyReservedAccount->customerEmail,
+            //     'customer_name' => $monnifyReservedAccount->customerName,
+            //     'accounts' => json_encode($monnifyReservedAccount->accounts),
+            // ]);
 
             // Create a wallet with welcome bonus
             // $welcome_bonus = Charges::select('welcome_bonus')->first();
