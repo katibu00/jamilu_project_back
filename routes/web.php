@@ -10,6 +10,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\InstructorsController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\PurchaseCourseController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\VideoController;
 
@@ -96,10 +97,13 @@ Route::get('/course/{slug}/buy/process', [PagesController::class, 'buyProcess'])
 
 
 
-Route::group(['prefix' => 'settings', 'middleware' => ['guest']], function () {
+Route::group(['prefix' => 'settings', 'middleware' => ['admin']], function () {
 
     Route::get('/monnify_api_key', [SettingsController::class, 'monnifyKeys'])->name('monnify_api_key');
     Route::post('/monnify_api_key', [SettingsController::class, 'saveMonnify']);
+
+    Route::get('/paystack_api_key', [SettingsController::class, 'paystackKeys'])->name('paystack_api_key');
+    Route::post('/paystack_api_key', [SettingsController::class, 'savePaystack']);
 });
 
 
@@ -193,4 +197,4 @@ Route::delete('/{id}', [VideoController::class, 'delete'])->name('videos.delete'
 Route::post('file-upload/upload-large-files', [VideoController::class, 'uploadLargeFiles'])->name('files.upload.large');
 Route::get('/videos/create', [VideoController::class, 'create'])->name('videos.create');
 
-// Route::post('file-upload/upload-large-files/{lesson}', [VideoController::class, 'uploadLargeFiles'])->name('files.upload.large');
+Route::post('/verify-payment', [PurchaseCourseController::class, 'purchaseViaPaystack'])->name('verify-payment');

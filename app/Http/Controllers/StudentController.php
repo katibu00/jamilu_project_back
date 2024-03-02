@@ -10,7 +10,6 @@ use App\Models\Course;
 use App\Models\CourseReview;
 use App\Models\Note;
 use App\Models\Question;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,45 +19,8 @@ class StudentController extends Controller
     {
         $user = auth()->user();
         $courses = $user->courses;
-        // dd($courses);
-
         return view('students.courses', compact('courses'));
     }
-
-    // public function class ($slug)
-    // {
-    //     $course = Course::where('slug', $slug)->first();
-
-    //     if (!$course) {
-    //         return redirect()->route('student.courses')->with('error', 'Course not found.');
-    //     }
-
-    //     // Fetch progress information for the logged-in user
-    //     $user = auth()->user();
-    //     $progress = json_decode($user->courses()->where('courses.id', $course->id)->pluck('progress')->first(), true);
-
-    //     // Retrieve the current lesson
-    //     $currentLesson = null;
-    //     foreach ($course->chapters as $chapter) {
-    //         foreach ($chapter->contents as $content) {
-    //             if ($content->id == $progress['current_lesson']) {
-    //                 $currentLesson = $content;
-    //                 break 2;
-    //             }
-    //         }
-    //     }
-
-    //     $currentLessonTitle = $currentLesson ? $currentLesson->title : null;
-    //     $videoUrl = $currentLesson && $currentLesson->content_type == 'lessons' ? $currentLesson->content_path : null;
-    //     $resources = $currentLesson && $currentLesson->content_type == 'resources' ? $currentLesson->resources : null;
-    //     $quiz = $currentLesson && $currentLesson->content_type == 'quiz' ? $currentLesson->quiz : null;
-
-    //     // Fetch the description of the current chapter
-    //     $currentChapter = $currentLesson ? $course->chapters->find($currentLesson->chapter_id) : null;
-
-    //     // Pass the current lesson, current chapter titles, description, and progress to the view
-    //     return view('students.class', compact('course', 'progress', 'currentLesson', 'currentLessonTitle', 'videoUrl', 'resources', 'quiz', 'currentChapter'));
-    // }
 
     public function class ($slug)
     {
@@ -97,7 +59,6 @@ class StudentController extends Controller
 
         // Fetch the description of the current chapter
         $currentChapter = $currentLesson ? $course->chapters->find($currentLesson->chapter_id) : null;
-// dd($videoUrl);
         // Pass the current lesson, current chapter titles, description, progress, quiz, and assessment details to the view
         return view('students.class', compact('course', 'progress', 'currentLesson', 'currentLessonTitle', 'videoUrl', 'resources', 'assessmentDetails', 'currentChapter'));
     }
@@ -471,11 +432,6 @@ class StudentController extends Controller
         // Optionally, return a success response
         return response()->json(['message' => 'Review submitted successfully']);
     }
-
-
-
-   
-
 
     public function fetchReviews(Request $request)
     {

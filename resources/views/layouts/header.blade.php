@@ -87,6 +87,9 @@
                       @if(auth()->user()->role == 'student')
                         @include('layouts.headers.student')
                       @endif
+                      @if(auth()->user()->role == 'admin')
+                        @include('layouts.headers.admin')
+                      @endif
                   @endauth
                   @guest
                       @include('layouts.headers.guest')

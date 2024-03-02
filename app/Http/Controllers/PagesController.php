@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\PaystackAPIKey;
 use Illuminate\Support\Facades\Auth;
 
 class PagesController extends Controller
@@ -37,6 +38,12 @@ class PagesController extends Controller
 
     public function buy($slug)
     {
+        if (!Auth::check()) {
+            return redirect()->route('login', ['return_to' => route('course.buy', ['slug' => $slug], false)])
+                ->with('error', 'Please log in to continue your transaction.');
+        }
+        $publicKey = PaystackAPIKey::first()->public_key ?? '';
+
         $course = Course::where('slug',$slug)->first();
         if (auth()->check()) {
             $user = auth()->user();
@@ -44,10 +51,9 @@ class PagesController extends Controller
             if ($user->reservedAccounts()->exists() && $user->wallet) {
                 $userReservedAccounts = $user->reservedAccounts;
                 $userWalletBalance = $user->wallet->balance;
-                return view('guest.buy_now', compact('course', 'userReservedAccounts', 'userWalletBalance'));
+                return view('guest.buy_now', compact('course', 'userReservedAccounts', 'userWalletBalance','publicKey'));
             }
         }
-        return view('guest.buy_now', compact('course'));
     }
 
 
