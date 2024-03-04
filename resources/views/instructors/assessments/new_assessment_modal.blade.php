@@ -22,6 +22,22 @@
                         @enderror
                     </div>
 
+                    <div class="mb-3">
+                        <label for="course_id" class="form-label">Course</label>
+                        <select id="course_id" class="form-select @error('course_id') is-invalid @enderror" name="course_id">
+                            <option value=""></option>
+                            <!-- Populate options dynamically from backend -->
+                            @foreach ($courses as $course)
+                                <option value="{{ $course->id }}">{{ $course->title }}</option>
+                            @endforeach
+                        </select>
+                        @error('course_id')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
 
                     <div class="mb-3">
                         <label for="numQuestions" class="form-label">Number of Questions</label>

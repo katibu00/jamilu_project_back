@@ -90,7 +90,8 @@ class PagesController extends Controller
             'current_chapter' => $firstChapter ? $firstChapter->id : null,
             'completed_chapters' => [],
             'current_lesson' => $firstLesson ? $firstLesson->id : null,
-            'completed_lessons' => []
+            'completed_lessons' => [],
+            'completion_dates' => [] 
         ];
     
         $user->courses()->attach($course, ['progress' => json_encode($progress)]);

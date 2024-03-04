@@ -102,8 +102,8 @@
         }
 
         .tab-content {
-            border: 1px solid #007bff;
-            padding: 15px;
+            /* border: 1px solid #007bff; */
+            /* padding: 1px; */
             border-radius: 0 0 5px 5px;
         }
 
@@ -161,8 +161,6 @@
         }
     </style>
 
-
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -180,14 +178,12 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </nav>
-
             <!-- Sidebar -->
             <div class="col-md-3 sidebar" id="sidebar">
                 <a href="{{ route('student.courses') }}" class="btn btn-primary btn-block my-3"
                     style="background-color: #3498db; color: #fff; border: 1px solid #3498db; text-decoration: none; padding: 10px 20px; display: inline-block; border-radius: 5px; transition: background-color 0.3s;">
                     Back to Dashboard
                 </a>
-
                 <ul class="list-group">
                     @foreach ($course->chapters as $chapter)
                         <li class="list-group-item lesson-item {{ $chapter->id == $progress['current_chapter'] ? ' active-chapter' : '' }} {{ in_array($chapter->id, $progress['completed_chapters']) ? ' completed-chapter' : '' }}"
@@ -203,7 +199,9 @@
                             class="collapse lesson-list{{ $chapter->id == $progress['current_chapter'] ? ' show' : '' }}">
                             @foreach ($chapter->contents as $content)
                                 @php
-                                    $lessonLocked = !in_array($content->id, $progress['completed_lessons']) && $content->id != $progress['current_lesson'];
+                                    $lessonLocked =
+                                        !in_array($content->id, $progress['completed_lessons']) &&
+                                        $content->id != $progress['current_lesson'];
                                 @endphp
 
                                 <a href="{{ $lessonLocked ? '#' : route('courses.lessons.showLesson', ['slug' => $course->slug, 'lessonId' => $content->id]) }}"
@@ -226,10 +224,7 @@
                             @endforeach
                         </div>
                     @endforeach
-
                 </ul>
-
-
             </div>
 
             <!-- Main Content -->
@@ -240,57 +235,198 @@
                         <span class="current-lesson float-right">{{ $currentLessonTitle ?? 'No Lesson' }}</span>
                     </div>
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: 20%;" aria-valuenow="20"
-                            aria-valuemin="0" aria-valuemax="100">
-                            20%
+                        <div class="progress-bar" role="progressbar" style="width: {{ round($progressPercentage) }}%;"
+                            aria-valuenow="{{ round($progressPercentage) }}" aria-valuemin="0" aria-valuemax="100">
+                            {{ round($progressPercentage) }}%
                         </div>
                     </div>
                     @if (session('info'))
-                        <div class="alert alert-info mt-3">
+                        <div class="alert alert-info my-2">
                             {{ session('info') }}
                         </div>
                     @endif
-
-                </div>
-
-
-                <div class="video-player">
-                    @if ($currentLesson && $currentLesson->content_type == 'lessons')
-                        <!-- Video Player Code -->
-                        <video id="videoPlayer" width="100%" height="auto" controls controlsList="nodownload"
-                            autoplay muted>
-                            <source src="{{ asset('/'.$videoUrl) }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                    @if (session('success'))
+                        <div class="alert alert-success my-2">
+                            {{ session('success') }}
+                        </div>
                     @endif
                 </div>
 
-                @if ($currentLesson && $currentLesson->content_type == 'resources')
-                    <!-- Resources Section -->
-                    <div class="resources">
-                        <h4>Resources</h4>
-                        <p>{{ $currentLesson->title }} <a href="{{ $currentLesson->content_path }}"
-                                class="btn btn-primary btn-sm" download>Download</a></p>
+                @if ($currentLesson && $currentLesson->content_type == 'lessons')
+                    <div class="video-player">
+                        <!-- Video Player Code -->
+                        <video id="videoPlayer" width="100%" height="auto" controls controlsList="nodownload"
+                            autoplay>
+                            <source src="{{ asset('/' . $videoUrl) }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var video = document.getElementById('videoPlayer');
+
+                                // Autoplay the video when the page loads
+                                video.autoplay = true;
+
+                                video.addEventListener('seeked', function() {
+                                    if (!video.paused) {
+                                        video.play();
+                                    }
+                                });
+                            });
+                        </script>
                     </div>
                 @endif
 
-                @if ($currentLesson && $currentLesson->content_type == 'quiz')
-                    <!-- Quiz Section -->
-                    <div class="quiz">
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ $currentLesson->title }}</h5>
-                                <p class="card-text">Duration: {{ $assessmentDetails->duration }} mins</p>
-                                <p class="card-text">Question Number: {{ $assessmentDetails->num_questions }}</p>
-                                <a href="{{ route('start.assessment', ['assessmentId' => $assessmentDetails->id]) }}"
-                                    class="btn btn-danger">Start Quiz</a>
+                @if ($currentLesson && $currentLesson->content_type == 'resources')
+                    <!-- Resources Section -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Resources</h4>
+                            <div class="card-text">
+                                <p>
+                                    <i class="fas fa-file"></i> <!-- File icon -->
+                                    {{ $currentLesson->title }}
+                                </p>
+                                <a href="{{ $currentLesson->content_path }}" class="btn btn-primary btn-sm"
+                                    download>Download</a>
                             </div>
                         </div>
                     </div>
                 @endif
 
+                {{-- @if ($currentLesson && $currentLesson->content_type == 'quiz')
+                <!-- Quiz Section -->
+                <div class="quiz">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $currentLesson->title }}</h5>
+                            <p class="card-text">Duration: {{ $assessmentDetails->duration / 60 }} mins</p>
+                            <p class="card-text">Question Number: {{ $assessmentDetails->num_questions }}</p>
+                            <a href="{{ route('start.assessment', ['assessmentId' => $assessmentDetails->id]) }}"
+                                class="btn btn-danger">Start Quiz</a>
+                        </div>
+                    </div>
+                    <!-- Instructions Section -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Instructions</h5>
+                            <p class="card-text">
+                                <strong>1. Technical Requirements:</strong><br>
+                                Ensure a stable internet connection and access to a reliable device. Use a compatible web browser and verify audio/video settings.
+                            </p>
+                            <p class="card-text">
+                                <strong>2. Access and Authentication:</strong><br>
+                                Follow provided instructions for accessing the online exam platform and use secure authentication methods.
+                            </p>
+                            <p class="card-text">
+                                <strong>3. Exam Environment:</strong><br>
+                                Take the exam in a quiet and distraction-free environment. Prohibit the use of unauthorized resources or assistance.
+                            </p>
+                            <p class="card-text">
+                                <strong>4. Exam Format and Instructions:</strong><br>
+                                Follow the outlined exam format and instructions. Navigate through the exam platform and submit answers accordingly.
+                            </p>
+                            <p class="card-text">
+                                <strong>5. Academic Integrity:</strong><br>
+                                Adhere to academic honesty and integrity policies. Avoid plagiarism, cheating, or unauthorized collaboration.
+                            </p>
+                            <p class="card-text">
+                                <strong>6. Technical Support:</strong><br>
+                                Seek technical support if encountering any issues during the exam. Follow provided troubleshooting tips.
+                            </p>
+                            <p class="card-text">
+                                <strong>7. Accessibility:</strong><br>
+                                Ensure accessibility of exam materials for students with disabilities. Provide necessary accommodations as needed.
+                            </p>
+                            <p class="card-text">
+                                <strong>8. Emergency Protocols:</strong><br>
+                                Follow emergency procedures in case of technical glitches or disruptions during the exam. Contact support if needed.
+                            </p>
+                            <p class="card-text">
+                                <strong>9. Post-Exam Review:</strong><br>
+                                Review exam performance and feedback after completion. Address any concerns or discrepancies with instructors.
+                            </p>
+                        </div>
+                    </div>
+                    
+                </div>
+                @endif --}}
 
 
+
+
+                @if ($currentLesson && $currentLesson->content_type == 'quiz')
+                <!-- Quiz Section -->
+                <div class="quiz">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $currentLesson->title }}</h5>
+                            <p class="card-text">Duration: {{ $assessmentDetails->duration / 60 }} mins</p>
+                            <p class="card-text">Question Number: {{ $assessmentDetails->num_questions }}</p>
+                            @if ($quizAttempted)
+                                <!-- If quiz has been attempted -->
+                                <a href="{{ route('start.assessment', ['assessmentId' => $assessmentDetails->id]) }}" class="btn btn-primary">Retake Assessment</a>
+                                <a href="#" class="btn btn-success show-score-btn" data-toggle="modal" data-target="#scoreModal" data-assessment-id="{{ $assessmentDetails->id }}" data-user-id="{{ auth()->user()->id }}">Show Score</a>
+                                <!-- Show date and time the quiz was taken -->
+                                <p class="card-text mt-3">Date and Time Taken: {{ $assessmentDetails->created_at->format('M d, Y h:i A') }}</p>
+                            @else
+                                <!-- If quiz has not been attempted -->
+                                <a href="{{ route('start.assessment', ['assessmentId' => $assessmentDetails->id]) }}" class="btn btn-danger">Start Quiz</a>
+                            @endif
+                        </div>
+                    </div>
+                     <!-- Instructions Section -->
+                     <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Instructions</h5>
+                            <p class="card-text">
+                                <strong>1. Technical Requirements:</strong><br>
+                                Ensure a stable internet connection and access to a reliable device. Use a compatible web browser and verify audio/video settings.
+                            </p>
+                            <p class="card-text">
+                                <strong>2. Access and Authentication:</strong><br>
+                                Follow provided instructions for accessing the online exam platform and use secure authentication methods.
+                            </p>
+                            <p class="card-text">
+                                <strong>3. Exam Environment:</strong><br>
+                                Take the exam in a quiet and distraction-free environment. Prohibit the use of unauthorized resources or assistance.
+                            </p>
+                            <p class="card-text">
+                                <strong>4. Exam Format and Instructions:</strong><br>
+                                Follow the outlined exam format and instructions. Navigate through the exam platform and submit answers accordingly.
+                            </p>
+                            <p class="card-text">
+                                <strong>5. Academic Integrity:</strong><br>
+                                Adhere to academic honesty and integrity policies. Avoid plagiarism, cheating, or unauthorized collaboration.
+                            </p>
+                            <p class="card-text">
+                                <strong>6. Technical Support:</strong><br>
+                                Seek technical support if encountering any issues during the exam. Follow provided troubleshooting tips.
+                            </p>
+                            <p class="card-text">
+                                <strong>7. Accessibility:</strong><br>
+                                Ensure accessibility of exam materials for students with disabilities. Provide necessary accommodations as needed.
+                            </p>
+                            <p class="card-text">
+                                <strong>8. Emergency Protocols:</strong><br>
+                                Follow emergency procedures in case of technical glitches or disruptions during the exam. Contact support if needed.
+                            </p>
+                            <p class="card-text">
+                                <strong>9. Post-Exam Review:</strong><br>
+                                Review exam performance and feedback after completion. Address any concerns or discrepancies with instructors.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+
+
+
+
+
+            
                 <ul class="nav nav-tabs mt-3" id="myTabs">
                     <li class="nav-item">
                         <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview">Overview</a>
@@ -311,77 +447,65 @@
                 <div class="tab-content mt-3">
                     <!-- Overview Tab -->
                     <div class="tab-pane fade show active" id="overview">
-                        <div class="container mt-4">
-                            <!-- Chapter Overview -->
-                            {{-- <div class="card mb-4">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $currentChapter->title }} Overview</h5>
-                                    <div class="card-text" style="white-space: normal;">
-                                        @if (isset($currentChapter))
-                                            {!! $currentChapter->description !!}
-                                        @else
-                                            <p>No chapter selected.</p>
-                                        @endif
+                        <!-- Chapter Overview -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ $currentChapter->title }} Overview</h5>
+                                {!! $currentChapter->description !!}
+                            </div>
+                        </div>
+
+
+
+                        <!-- Course Overview -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Course Overview</h5>
+                                {!! $course->description !!}
+                            </div>
+                        </div>
+
+                        <!-- Instructor Overview -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Instructor Overview</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="single_instructor_thumb mr-3">
+                                        <img src="{{ asset($course->instructor->profile_image ? $course->instructor->profile_image : 'uploads/default.png') }}"
+                                            class="img-fluid rounded-circle" alt="Instructor Avatar"
+                                            style="width: 100px; height: 100px;">
                                     </div>
-                                </div>
-                            </div> --}}
-
-                            <div class="card mb-4">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $currentChapter->title }} Overview</h5>
-                                    {!! $currentChapter->description !!}
-                                </div>
-                            </div>
-
-
-
-                            <!-- Course Overview -->
-                            <div class="card mb-4">
-                                <div class="card-body">
-                                    <h5 class="card-title">Course Overview</h5>
-                                    {!! $course->description !!}
-                                </div>
-                            </div>
-
-                            <!-- Instructor Overview -->
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Instructor Overview</h5>
-                                    <div class="d-flex align-items-center">
-                                        <div class="single_instructor_thumb mr-3">
-                                            <img src="{{ asset($course->instructor->profile_image ? $course->instructor->profile_image : 'uploads/default.png') }}"
-                                                class="img-fluid rounded-circle" alt="Instructor Avatar"
-                                                style="width: 100px; height: 100px;">
-                                        </div>
-                                        <div class="single_instructor_caption">
-                                            <h4><a href="#">{{ $course->instructor->name }}</a></h4>
-                                            <p class="font-weight-bold">{{ $course->instructor->profile->profession }}
-                                            </p>
-                                            <p>{!! $course->instructor->profile->biography !!}</p>
-                                            {{-- <ul class="social_info">
-                                                <li><a href="{{ $course->instructor->profile->facebookLink ?? '#' }}"><i
-                                                            class="ti-facebook"></i></a></li>
-                                                <li><a href="{{ $course->instructor->profile->twitterLink ?? '#' }}"><i
-                                                            class="ti-twitter"></i></a></li>
-                                                <li><a href="{{ $course->instructor->profile->linkedInLink ?? '#' }}"><i
-                                                            class="ti-linkedin"></i></a></li>
-                                            </ul> --}}
-                                        </div>
+                                    <div class="single_instructor_caption">
+                                        <h4><a href="#">{{ $course->instructor->name }}</a></h4>
+                                        <p class="font-weight-bold">{{ $course->instructor->profile->profession }}
+                                        </p>
+                                        <p>{!! $course->instructor->profile->biography !!}</p>
+                                        {{-- <ul class="social_info">
+                                            <li><a href="{{ $course->instructor->profile->facebookLink ?? '#' }}"><i
+                                                        class="ti-facebook"></i></a></li>
+                                            <li><a href="{{ $course->instructor->profile->twitterLink ?? '#' }}"><i
+                                                        class="ti-twitter"></i></a></li>
+                                            <li><a href="{{ $course->instructor->profile->linkedInLink ?? '#' }}"><i
+                                                        class="ti-linkedin"></i></a></li>
+                                        </ul> --}}
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
                     {{-- notes --}}
                     <div class="tab-pane fade" id="notes">
-                        <h4>Notes</h4>
-                        <div id="notesLoader" class="spinner-border text-primary" role="status"
-                            style="display: none;">
-                            <span class="sr-only">Loading...</span>
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Notes</h4>
+                                <div id="notesLoader" class="spinner-border text-primary" role="status"
+                                    style="display: none;">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div id="notesContainer"></div>
+                            </div>
                         </div>
-                        <div id="notesContainer"></div>
                     </div>
 
 
@@ -413,19 +537,9 @@
                     </style>
 
 
-                    {{-- <div class="tab-pane fade" id="reviews">
-                        <!-- Display existing reviews -->
-                        <div class="existing-reviews">
-                            <!-- Sample reviews -->
-                        </div>
-                        <!-- Button to add a new review -->
-                        <button class="btn btn-primary" id="add-review-btn" data-toggle="modal"
-                            data-target="#reviewModal">Add Your Review</button>
-                    </div> --}}
-
-
                     <div class="tab-pane fade" id="reviews">
-                        <button class="btn btn-primary mb-2 pull-right" id="add-review-btn" data-toggle="modal" data-target="#reviewModal">Add Your Review</button>
+                        <button class="btn btn-primary mb-2 pull-right" id="add-review-btn" data-toggle="modal"
+                            data-target="#reviewModal">Add Your Review</button>
 
                         <div class="existing-reviews">
                             <!-- Container to append fetched reviews -->
@@ -435,12 +549,8 @@
                         </div>
                         <!-- Button to add a new review -->
                     </div>
-                    
-
 
                 </div>
-
-
 
                 <!-- Add Note Modal -->
                 <div class="modal fade" id="addNoteModal" tabindex="-1" role="dialog"
@@ -502,6 +612,32 @@
                 </div>
 
 
+                <!-- Modal HTML -->
+                <div class="modal fade" id="scoreModal" tabindex="-1" role="dialog" aria-labelledby="scoreModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="scoreModalLabel">Score Details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="text-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
             </div>
         </div>
     </div>
@@ -527,7 +663,8 @@
     <input type="hidden" id="currentLessonId" value="{{ $progress['current_lesson'] }}">
 
     <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> --}}
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -535,95 +672,164 @@
     <!-- Add this to the head section of your HTML file -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="/assets/js/components/tinymce/tinymce.min.js"></script>
+
 
     <script>
-      $(document).ready(function() {
-    // Global variables to track offset and limit
-    var offset = 0;
-    var limit = 2;
 
-    // Function to fetch reviews
-    function fetchReviews() {
+
+$(document).ready(function() {
+    $('.show-score-btn').click(function() {
+        var assessmentId = $(this).data('assessment-id');
+        var userId = $(this).data('user-id');
+
+        // Show loading spinner
+        $('#scoreModal .modal-body').html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Fetching data...</div>');
+
+        // AJAX request to fetch assessment score
         $.ajax({
-            url: '{{ route('fetch-reviews') }}',
+            url: '{{ route('fetch-score') }}',
             method: 'GET',
             data: {
-                offset: offset,
-                limit: limit
-            },
-            beforeSend: function() {
-                // Show spinner loader while reviews are loading
-                $('#reviewContainer').append('<div class="text-center"><i class="fas fa-spinner fa-spin"></i></div>');
+                assessmentId: assessmentId,
+                userId: userId
             },
             success: function(response) {
-                // Remove the spinner loader
-                $('#reviewContainer .fa-spinner').parent().remove();
+                // Hide loading spinner
+                $('#scoreModal .modal-body').empty();
 
-                // Append fetched reviews to the container
-                $.each(response.reviews, function(index, review) {
-                    var starRating = '';
-                    // Create star rating HTML based on the rating count
-                    for (var i = 1; i <= review.rating; i++) {
-                        starRating += '<span class="star' + (i <= review.rating ? ' filled' : '') + '">&#9733;</span>';
-                    }
+                // Display assessment score details
+                var modalBody = $('#scoreModal .modal-body');
+                modalBody.append('<div class="table-responsive"><table class="table"></table></div>');
+                var table = modalBody.find('table');
+                var tableHeader = $('<thead><tr><th>Question</th><th>User Answer</th><th>Correct Answer</th><th>Status</th></tr></thead>');
+                var tableBody = $('<tbody></tbody>');
 
-                    // Handle user's image
-                    var userImage = review.user_picture ? review.user_picture : getInitials(review.user_name);
-
-                    // Append review item as a card
-                    var reviewItem = '<div class="card mb-3">' +
-                                        '<div class="card-body">' +
-                                            '<div class="user-info">' +
-                                                '<img src="' + userImage + '" alt="' + review.user_name + '" class="user-picture">' +
-                                                '<span class="user-name">' + review.user_name + '</span>' +
-                                            '</div>' +
-                                            '<div class="star-rating">' + starRating + '</div>' +
-                                            '<div class="review-content">' + review.content + '</div>' +
-                                        '</div>' +
-                                    '</div>';
-                    $('#reviewContainer').append(reviewItem);
+                response.responses.forEach(function(response) {
+                    var status = response.is_correct ? '<span class="text-success">Correct</span>' : '<span class="text-danger">Incorrect</span>';
+                    tableBody.append('<tr><td>' + response.question.question + '</td><td>' + response.response + '</td><td>' + response.question.correct_answer + '</td><td>' + status + '</td></tr>');
                 });
 
-                // Increment offset for the next fetch
-                offset += limit;
+                table.append(tableHeader);
+                table.append(tableBody);
 
-                // If there are no more reviews, hide the "Show More" button
-                if (response.reviews.length < limit) {
-                    $('#loadMoreReviews').hide();
-                }
+                // Show the summary
+                var summary = $('<div class="text-center"><p>Total Questions: ' + response.totalQuestions + ' | Total Attempted: ' + response.totalAttempted + ' | Total Correct: ' + response.totalCorrect + ' | Total Failed: ' + response.totalFailed + ' | Remark: ' + response.remark + '</p></div>');
+                modalBody.append(summary);
+
+                // Show the modal
+                $('#scoreModal').modal('show');
             },
+
             error: function(xhr, status, error) {
                 console.error(error); // Log any errors
-                // Show error message if reviews could not be fetched
-                $('#reviewContainer').append('<div class="text-danger">Failed to load reviews. Please try again later.</div>');
+                // Show error message if failed to fetch data
+                $('#scoreModal .modal-body').html('<div class="text-danger">Failed to fetch assessment score. Please try again later.</div>');
             }
         });
-    }
-
-    // Load initial reviews when tab is switched to
-    $('#reviews-tab').click(function() {
-        fetchReviews();
-    });
-
-    function getInitials(name) {
-    if (!name) return ''; // Check if name is null or undefined
-    return name.split(' ').map(function(word) {
-        return word.charAt(0).toUpperCase();
-    }).join('');
-}
-
-    // Load more reviews when "Show More" button is clicked
-    $(document).on('click', '#loadMoreReviews', function() {
-        fetchReviews();
     });
 });
 
-    </script>
-    
-    
-    
-    
 
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            // Global variables to track offset and limit
+            var offset = 0;
+            var limit = 2;
+
+            // Function to fetch reviews
+            function fetchReviews() {
+                $.ajax({
+                    url: '{{ route('fetch-reviews') }}',
+                    method: 'GET',
+                    data: {
+                        offset: offset,
+                        limit: limit
+                    },
+                    beforeSend: function() {
+                        // Show spinner loader while reviews are loading
+                        $('#reviewContainer').html(
+                            '<div class="text-center"><i class="fas fa-spinner fa-spin"></i></div>');
+                    },
+                    success: function(response) {
+                        // Remove the spinner loader
+                        $('#reviewContainer .fa-spinner').parent().remove();
+
+                        if (response.reviews && response.reviews.length > 0) {
+                            // Append fetched reviews to the container
+                            $.each(response.reviews, function(index, review) {
+                                var starRating = '';
+                                // Create star rating HTML based on the rating count
+                                for (var i = 1; i <= review.rating; i++) {
+                                    starRating += '<span class="star' + (i <= review.rating ?
+                                        ' filled' : '') + '">&#9733;</span>';
+                                }
+
+                                // Handle user's image
+                                var userImage = review.user_picture ? review.user_picture :
+                                    getInitials(review.user_name);
+
+                                // Append review item as a card
+                                var reviewItem = '<div class="card mb-3">' +
+                                    '<div class="card-body">' +
+                                    '<div class="user-info">' +
+                                    '<img src="' + userImage + '" alt="' + review.user_name +
+                                    '" class="user-picture">' +
+                                    '<span class="user-name">' + review.user_name + '</span>' +
+                                    '</div>' +
+                                    '<div class="star-rating">' + starRating + '</div>' +
+                                    '<div class="review-content">' + review.content + '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                                $('#reviewContainer').append(reviewItem);
+                            });
+
+                            // Increment offset for the next fetch
+                            offset += limit;
+
+                            // If there are no more reviews, hide the "Show More" button
+                            if (response.reviews.length < limit) {
+                                $('#loadMoreReviews').hide();
+                            }
+                        } else {
+                            // If no reviews, display a message
+                            $('#reviewContainer').html('<div class="text-muted">No reviews yet.</div>');
+                            // Hide the "Show More" button
+                            $('#loadMoreReviews').hide();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error); // Log any errors
+                        // Show error message if reviews could not be fetched
+                        $('#reviewContainer').html(
+                            '<div class="text-danger">Failed to load reviews. Please try again later.</div>'
+                            );
+                    }
+                });
+            }
+
+            // Load initial reviews when tab is switched to
+            $('#reviews-tab').click(function() {
+                fetchReviews();
+            });
+
+
+            function getInitials(name) {
+                if (!name) return ''; // Check if name is null or undefined
+                return name.split(' ').map(function(word) {
+                    return word.charAt(0).toUpperCase();
+                }).join('');
+            }
+
+            // Load more reviews when "Show More" button is clicked
+            $(document).on('click', '#loadMoreReviews', function() {
+                fetchReviews();
+            });
+        });
+    </script>
 
 
     <!-- submit reviws -->
@@ -697,8 +903,6 @@
         });
     </script>
 
-
-
     <script>
         $(document).ready(function() {
             // Parse the progress JSON
@@ -746,9 +950,6 @@
             });
         });
     </script>
-
-    {{-- <script src="https://cdn.tiny.cloud/1/k9osr3m8tz88vazuys0nr7q1fytr8gnfem7ho34o6h90d62d/tinymce/5/tinymce.min.js"
-        referrerpolicy="origin"></script> --}}
 
     <script>
         tinymce.init({
@@ -1051,15 +1252,15 @@
                                         const getInitials = (name) => name.split(' ').map(word => word.charAt(0)).join('');
 
                                         return `
-                                                    <div class="d-flex">
-                                                        <div class="rounded-circle avatar-initials me-2">
-                                                            <span>${comment.user ? getInitials(comment.user.name) : 'N/A'}</span>
+                                                        <div class="d-flex">
+                                                            <div class="rounded-circle avatar-initials me-2">
+                                                                <span>${comment.user ? getInitials(comment.user.name) : 'N/A'}</span>
+                                                            </div>
+                                                            <p class="mb-0">
+                                                                <strong>${comment.user ? comment.user.name : 'Unknown User'}</strong>: ${comment.content}
+                                                            </p>
                                                         </div>
-                                                        <p class="mb-0">
-                                                            <strong>${comment.user ? comment.user.name : 'Unknown User'}</strong>: ${comment.content}
-                                                        </p>
-                                                    </div>
-                                                `;
+                                                    `;
                                     }).join('')}
                                 </div>
                             </div>
@@ -1116,8 +1317,6 @@
             loadDiscussions();
         });
     </script>
-
-
 </body>
 
 </html>

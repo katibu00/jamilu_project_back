@@ -22,46 +22,115 @@ class StudentController extends Controller
         return view('students.courses', compact('courses'));
     }
 
-    public function class ($slug)
-    {
-        $course = Course::where('slug', $slug)->first();
+    // public function class ($slug)
+    // {
+    //     $course = Course::where('slug', $slug)->first();
 
-        if (!$course) {
-            return redirect()->route('student.courses')->with('error', 'Course not found.');
-        }
+    //     if (!$course) {
+    //         return redirect()->route('student.courses')->with('error', 'Course not found.');
+    //     }
 
-        // Fetch progress information for the logged-in user
-        $user = auth()->user();
-        $progress = json_decode($user->courses()->where('courses.id', $course->id)->pluck('progress')->first(), true);
+    //     // Fetch progress information for the logged-in user
+    //     $user = auth()->user();
+    //     $progress = json_decode($user->courses()->where('courses.id', $course->id)->pluck('progress')->first(), true);
 
-        // Retrieve the current lesson
-        $currentLesson = null;
-        foreach ($course->chapters as $chapter) {
-            foreach ($chapter->contents as $content) {
-                if ($content->id == $progress['current_lesson']) {
-                    $currentLesson = $content;
-                    break 2;
-                }
+    //     // Retrieve the current lesson
+    //     $currentLesson = null;
+    //     foreach ($course->chapters as $chapter) {
+    //         foreach ($chapter->contents as $content) {
+    //             if ($content->id == $progress['current_lesson']) {
+    //                 $currentLesson = $content;
+    //                 break 2;
+    //             }
+    //         }
+    //     }
+
+    //     $currentLessonTitle = $currentLesson ? $currentLesson->title : null;
+    //     $videoUrl = $currentLesson && $currentLesson->content_type == 'lessons' ? $currentLesson->content_path : null;
+    //     $resources = $currentLesson && $currentLesson->content_type == 'resources' ? $currentLesson->resources : null;
+
+    //     $assessmentDetails = null;
+
+    //     if ($currentLesson && $currentLesson->content_type == 'quiz') {
+    //         // Fetch assessment details for the current quiz
+    //         $quiz = $currentLesson->quiz_id;
+    //         $assessmentDetails = Assessment::find($quiz);
+    //     }
+
+    //     // Fetch the description of the current chapter
+    //     $currentChapter = $currentLesson ? $course->chapters->find($currentLesson->chapter_id) : null;
+    //     // Pass the current lesson, current chapter titles, description, progress, quiz, and assessment details to the view
+    //     $totalLessons = $course->chapters->flatMap->contents->unique('id')->count();
+    //     $completedLessons = count(array_unique($progress['completed_lessons']));
+
+    //     // Calculate progress percentage
+    //     $progressPercentage = $totalLessons > 0 ? ($completedLessons / $totalLessons) * 100 : 0;
+
+    //     return view('students.class', compact('course', 'progress', 'currentLesson', 'currentLessonTitle', 'videoUrl', 'resources', 'assessmentDetails', 'currentChapter', 'progressPercentage'));
+    // }
+
+
+
+    public function class($slug)
+{
+    $course = Course::where('slug', $slug)->first();
+
+    if (!$course) {
+        return redirect()->route('student.courses')->with('error', 'Course not found.');
+    }
+
+    // Fetch progress information for the logged-in user
+    $user = auth()->user();
+    $progress = json_decode($user->courses()->where('courses.id', $course->id)->pluck('progress')->first(), true);
+
+    // Retrieve the current lesson
+    $currentLesson = null;
+    foreach ($course->chapters as $chapter) {
+        foreach ($chapter->contents as $content) {
+            if ($content->id == $progress['current_lesson']) {
+                $currentLesson = $content;
+                break 2;
             }
         }
-
-        $currentLessonTitle = $currentLesson ? $currentLesson->title : null;
-        $videoUrl = $currentLesson && $currentLesson->content_type == 'lessons' ? $currentLesson->content_path : null;
-        $resources = $currentLesson && $currentLesson->content_type == 'resources' ? $currentLesson->resources : null;
-
-        $assessmentDetails = null;
-
-        if ($currentLesson && $currentLesson->content_type == 'quiz') {
-            // Fetch assessment details for the current quiz
-            $quiz = $currentLesson->quiz_id;
-            $assessmentDetails = Assessment::find($quiz);
-        }
-
-        // Fetch the description of the current chapter
-        $currentChapter = $currentLesson ? $course->chapters->find($currentLesson->chapter_id) : null;
-        // Pass the current lesson, current chapter titles, description, progress, quiz, and assessment details to the view
-        return view('students.class', compact('course', 'progress', 'currentLesson', 'currentLessonTitle', 'videoUrl', 'resources', 'assessmentDetails', 'currentChapter'));
     }
+
+    $currentLessonTitle = $currentLesson ? $currentLesson->title : null;
+    $videoUrl = $currentLesson && $currentLesson->content_type == 'lessons' ? $currentLesson->content_path : null;
+    $resources = $currentLesson && $currentLesson->content_type == 'resources' ? $currentLesson->resources : null;
+
+    $assessmentDetails = null;
+    $quizAttempted = false; // Flag to check if the quiz has been attempted
+
+    if ($currentLesson && $currentLesson->content_type == 'quiz') {
+        // Fetch assessment details for the current quiz
+        $quiz = $currentLesson->quiz_id;
+        $assessmentDetails = Assessment::find($quiz);
+
+        // Check if the user has attempted the quiz
+        $quizAttempted = AssessmentResponse::where([
+            'user_id' => $user->id,
+            'assessment_id' => $quiz,
+        ])->exists();
+    }
+
+    // Fetch the description of the current chapter
+    $currentChapter = $currentLesson ? $course->chapters->find($currentLesson->chapter_id) : null;
+    // Pass the current lesson, current chapter titles, description, progress, quiz, and assessment details to the view
+    $totalLessons = $course->chapters->flatMap->contents->unique('id')->count();
+    $completedLessons = count(array_unique($progress['completed_lessons']));
+
+    // Calculate progress percentage
+    $progressPercentage = $totalLessons > 0 ? ($completedLessons / $totalLessons) * 100 : 0;
+
+    return view('students.class', compact('course', 'progress', 'currentLesson', 'currentLessonTitle', 'videoUrl', 'resources', 'assessmentDetails', 'currentChapter', 'progressPercentage', 'quizAttempted'));
+}
+
+
+
+
+
+
+
 
     public function nextLesson(Request $request, $slug)
     {
@@ -97,7 +166,7 @@ class StudentController extends Controller
                 'user_id' => $user->id,
                 'assessment_id' => $quizId,
             ])->exists();
-    
+
             if (!$userHasAttempted) {
                 // Redirect to the quiz page if the user has not attempted the quiz
                 return back()->with('info', 'You must attempt the quiz before moving to the next lesson.');
@@ -115,6 +184,7 @@ class StudentController extends Controller
             }
 
             $progress['completed_lessons'][] = $currentLessonId;
+            $progress['completion_dates'][$currentLessonId] = now();
 
             $user->courses()->updateExistingPivot($course->id, ['progress' => json_encode($progress)]);
 
@@ -124,7 +194,7 @@ class StudentController extends Controller
             $currentLessonTitle = $currentLesson ? $currentLesson->title : 'No Lesson';
 
             return redirect()->route('student.course.show', ['slug' => $slug])
-                ->with('success', 'Moved to the next lesson.')
+            // ->with('success', 'Moved to the next lesson.')
                 ->with(compact('currentChapterTitle', 'currentLessonTitle'));
         } else {
             // If there are no more lessons, set progress to the first lesson of the first chapter
@@ -137,6 +207,7 @@ class StudentController extends Controller
             // Add the last chapter and lesson to the completed lists
             $progress['completed_chapters'][] = $currentChapterId;
             $progress['completed_lessons'][] = $currentLessonId;
+            $progress['completion_dates'][$currentLessonId] = now();
 
             $user->courses()->updateExistingPivot($course->id, ['progress' => json_encode($progress)]);
 
@@ -182,7 +253,6 @@ class StudentController extends Controller
 
         $contentType = $selectedLesson->content_type;
 
-        
         // Define $currentLesson based on the selected lesson
         $currentLesson = $selectedLesson;
         $currentChapter = $course->chapters->find($selectedLesson->chapter_id);
@@ -197,20 +267,24 @@ class StudentController extends Controller
             }
         }
 
+        // Calculate progress percentage
+        $totalLessons = $course->chapters->flatMap->contents->unique('id')->count();
+        $completedLessons = count(array_unique($progress['completed_lessons']));
+        $progressPercentage = $totalLessons > 0 ? round(($completedLessons / $totalLessons) * 100) : 0;
+
         // Render the view based on content type
         switch ($contentType) {
             case 'lessons':
-                return view('students.class', compact('course', 'progress', 'currentChapterTitle', 'currentLessonTitle', 'videoUrl', 'currentLesson', 'currentChapter'));
+                return view('students.class', compact('course', 'progress', 'currentChapterTitle', 'currentLessonTitle', 'videoUrl', 'currentLesson', 'currentChapter', 'progressPercentage'));
             case 'resources':
                 // Additional logic for resources content type
-                return view('students.class', compact('course', 'progress', 'currentChapterTitle', 'currentLessonTitle', 'videoUrl', 'contentType', 'currentLesson', 'currentChapter'));
+                return view('students.class', compact('course', 'progress', 'currentChapterTitle', 'currentLessonTitle', 'videoUrl', 'contentType', 'currentLesson', 'currentChapter', 'progressPercentage'));
             case 'quiz':
                 // Additional logic for quiz content type
-                return view('students.class', compact('course', 'progress', 'currentChapterTitle', 'currentLessonTitle', 'videoUrl', 'contentType', 'currentLesson', 'currentChapter', 'assessmentDetails'));
+                return view('students.class', compact('course', 'progress', 'currentChapterTitle', 'currentLessonTitle', 'videoUrl', 'contentType', 'currentLesson', 'currentChapter', 'assessmentDetails', 'progressPercentage'));
             default:
                 return redirect()->route('student.course.show', ['slug' => $slug])->with('error', 'Invalid content type.');
         }
-
     }
 
     public function saveNote(Request $request)
@@ -339,7 +413,7 @@ class StudentController extends Controller
 
     public function submitExam(Request $request)
     {
-       
+
         $userResponsesArray = $request->input('responses');
         $examId = (int) $request->examId;
 
@@ -353,9 +427,7 @@ class StudentController extends Controller
         ])->first();
 
         $exam = Assessment::find($examId);
-        $showResult = $exam->show_result;
-        $courseSlug = Course::select('id','slug')->where('id',$exam->course_id)->first();
-       
+        $courseSlug = Course::select('id', 'slug')->where('id', $exam->course_id)->first();
 
         if ($exam->attempt_limit !== 'unlimited' && $existingResponse) {
 
@@ -394,14 +466,11 @@ class StudentController extends Controller
                 $score++;
             }
         }
-        $redirectUrl = $showResult === 'yes'
-        ? route('cbt.student.exams.result', ['examId' => $examId, 'score' => $score])
-        : route('student.course.show', ['slug' => $courseSlug->slug]);
+        $redirectUrl = route('student.course.show', ['slug' => $courseSlug->slug]);
 
         // return response()->json(['redirect_url' => $redirectUrl]);
 
         return response()->json(['redirect_url' => $redirectUrl, 'success' => 'Quiz submitted successfully!']);
-
 
     }
 
@@ -425,7 +494,7 @@ class StudentController extends Controller
         $review->course_id = $request->course_id;
         $review->rating = $validatedData['rating'];
         $review->review = $validatedData['review'];
-        
+
         // Save the review
         $review->save();
 
@@ -438,22 +507,22 @@ class StudentController extends Controller
         // Retrieve the offset and limit from the request
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 2); // Default limit is 5
-    
+
         // Fetch reviews from the database using the offset and limit
         $reviews = CourseReview::with('user') // Eager load the user relationship
-                        ->orderBy('created_at', 'desc')
-                        ->skip($offset)
-                        ->take($limit)
-                        ->get();
-    
+            ->orderBy('created_at', 'desc')
+            ->skip($offset)
+            ->take($limit)
+            ->get();
+
         // If no reviews are fetched, return an empty response
         if ($reviews->isEmpty()) {
             return response()->json([]);
         }
-    
+
         // Increment the offset for the next fetch
         $nextOffset = $offset + $limit;
-    
+
         // Transform reviews data to include user's name and picture
         $transformedReviews = $reviews->map(function ($review) {
             return [
@@ -463,9 +532,53 @@ class StudentController extends Controller
                 'user_picture' => $review->user->profile_image, // Access user's picture from the user relationship
             ];
         });
-    
+
         // Return the transformed reviews along with the next offset as JSON response
         return response()->json(['reviews' => $transformedReviews, 'next_offset' => $nextOffset]);
     }
-    
+
+
+
+
+
+public function fetchScore(Request $request)
+{
+    // Retrieve assessment ID and user ID from the request
+    $assessmentId = $request->input('assessmentId');
+    $userId = $request->input('userId');
+
+    try {
+        // Fetch assessment details
+        $assessment = Assessment::findOrFail($assessmentId);
+
+        // Fetch user's responses for the assessment
+        $responses = AssessmentResponse::where('assessment_id', $assessmentId)
+                                        ->where('user_id', $userId)
+                                        ->with('question')
+                                        ->get();
+
+        // Calculate scores and other necessary data
+        $totalQuestions = $assessment->questions->count();
+        $totalAttempted = $responses->count();
+        $totalCorrect = $responses->where('is_correct', true)->count();
+        $totalFailed = $totalAttempted - $totalCorrect;
+        $remark = $totalCorrect >= $totalQuestions * 0.7 ? 'Pass' : 'Fail';
+
+        // Return the response as JSON
+        return response()->json([
+            'assessment' => $assessment,
+            'responses' => $responses,
+            'totalQuestions' => $totalQuestions,
+            'totalAttempted' => $totalAttempted,
+            'totalCorrect' => $totalCorrect,
+            'totalFailed' => $totalFailed,
+            'remark' => $remark,
+        ]);
+    } catch (\Exception $e) {
+        // Return an error response if any exception occurs
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
+
 }

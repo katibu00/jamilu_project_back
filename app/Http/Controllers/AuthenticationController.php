@@ -202,7 +202,6 @@ class AuthenticationController extends Controller
 
 public function login(Request $request)
 {
-    // dd($request->all());
     $request->validate([
         'email_or_phone' => 'required',
         'password' => 'required',
@@ -232,7 +231,6 @@ public function login(Request $request)
     }
 }
 
-// ...
 
 
     protected function getCredentials(Request $request)
@@ -256,7 +254,7 @@ public function login(Request $request)
         } elseif ($role === 'instructor') {
             return 'home.instructor';
         } else {
-            return 'home.student';
+            return 'student.courses';
         }
     }
     

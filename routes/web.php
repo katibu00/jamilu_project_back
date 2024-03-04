@@ -80,6 +80,9 @@ Route::group(['prefix' => 'student', 'middleware' => ['auth']], function () {
 
     Route::get('/fetch-reviews', [StudentController::class, 'fetchReviews'])->name('fetch-reviews');
 
+    Route::get('/fetch-assessment-score', [StudentController::class, 'fetchScore'])->name('fetch-score');
+
+
 });
 
 

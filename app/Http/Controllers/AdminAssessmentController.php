@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Assessment;
+use App\Models\Course;
 use App\Models\Question;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class AdminAssessmentController extends Controller
             1 => 'Unlimited',
         ];
         $data['assessments'] = Assessment::where('instructor_id', auth()->user()->id)->get();
+        $data['courses'] = Course::where('instructor_id', auth()->user()->id)->get();
 
         return view('instructors.assessments.index', $data);
     }
@@ -36,18 +38,20 @@ class AdminAssessmentController extends Controller
             'numQuestions' => 'required|in:all,10,15,20,25,30,35,40,50,60,70,100',
             'attemptLimit' => 'required|in:unlimited,1,2,3',
             'showResult' => 'required|in:yes,no',
+            'course_id' => 'required|exists:courses,id', // Validate that the course_id exists in the courses table
         ]);
-
+    
         $assessment = new Assessment();
         $assessment->instructor_id = auth()->user()->id;
+        $assessment->course_id = $request->input('course_id'); // Store the course_id
         $assessment->title = $request->input('title');
         $assessment->duration = $request->input('duration');
         $assessment->num_questions = $request->input('numQuestions');
         $assessment->attempt_limit = $request->input('attemptLimit');
         $assessment->show_result = $request->input('showResult');
-
+    
         $assessment->save();
-
+    
         return redirect()->back()->with('success', 'Assessment created successfully!');
     }
 
