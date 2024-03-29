@@ -189,8 +189,7 @@ class AuthenticationController extends Controller
     public function loginIndex(Request $request)
     {
         $returnUrl = $request->query('return_to', '/');
-        // dd($returnUrl);
-        // dd($returnUrl);
+
         return view('auth.login', compact('returnUrl'));
     }
 
@@ -250,9 +249,9 @@ public function login(Request $request)
         $role = auth()->user()->role;
     
         if ($role === 'admin') {
-            return 'home.admin';
+            return '/home';
         } elseif ($role === 'instructor') {
-            return 'home.instructor';
+            return '/home';
         } else {
             return 'student.courses';
         }

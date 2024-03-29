@@ -15,16 +15,17 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug');
+            $table->unsignedBigInteger('instructor_id');
             $table->text('short_description')->nullable();
             $table->longText('description');
-            $table->unsignedInteger('level')->nullable();
+            $table->string('level')->nullable();
             $table->string('language')->nullable();
             $table->boolean('featured')->default(false);
             $table->boolean('is_free')->default(false);
             $table->decimal('price', 10, 2)->nullable();
             $table->decimal('discount_price', 10, 2)->nullable();
             $table->boolean('has_discount')->default(false);
-            $table->string('video_url')->nullable();
+            $table->string('featured_video')->nullable();
             $table->string('thumbnail')->nullable();
             $table->json('tags')->nullable(); 
 

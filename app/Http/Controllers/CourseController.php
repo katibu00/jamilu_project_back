@@ -39,6 +39,7 @@ class CourseController extends Controller
         // Create course
         $course = new Course();
         $course->title = $request->input('title');
+        $course->instructor_id = auth()->user()->id;
         $course->slug = Str::slug($request->input('title')); 
         $course->short_description = $request->input('short_description');
         $course->description = $request->input('description');

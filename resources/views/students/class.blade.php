@@ -295,67 +295,6 @@
                     </div>
                 @endif
 
-                {{-- @if ($currentLesson && $currentLesson->content_type == 'quiz')
-                <!-- Quiz Section -->
-                <div class="quiz">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $currentLesson->title }}</h5>
-                            <p class="card-text">Duration: {{ $assessmentDetails->duration / 60 }} mins</p>
-                            <p class="card-text">Question Number: {{ $assessmentDetails->num_questions }}</p>
-                            <a href="{{ route('start.assessment', ['assessmentId' => $assessmentDetails->id]) }}"
-                                class="btn btn-danger">Start Quiz</a>
-                        </div>
-                    </div>
-                    <!-- Instructions Section -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title">Instructions</h5>
-                            <p class="card-text">
-                                <strong>1. Technical Requirements:</strong><br>
-                                Ensure a stable internet connection and access to a reliable device. Use a compatible web browser and verify audio/video settings.
-                            </p>
-                            <p class="card-text">
-                                <strong>2. Access and Authentication:</strong><br>
-                                Follow provided instructions for accessing the online exam platform and use secure authentication methods.
-                            </p>
-                            <p class="card-text">
-                                <strong>3. Exam Environment:</strong><br>
-                                Take the exam in a quiet and distraction-free environment. Prohibit the use of unauthorized resources or assistance.
-                            </p>
-                            <p class="card-text">
-                                <strong>4. Exam Format and Instructions:</strong><br>
-                                Follow the outlined exam format and instructions. Navigate through the exam platform and submit answers accordingly.
-                            </p>
-                            <p class="card-text">
-                                <strong>5. Academic Integrity:</strong><br>
-                                Adhere to academic honesty and integrity policies. Avoid plagiarism, cheating, or unauthorized collaboration.
-                            </p>
-                            <p class="card-text">
-                                <strong>6. Technical Support:</strong><br>
-                                Seek technical support if encountering any issues during the exam. Follow provided troubleshooting tips.
-                            </p>
-                            <p class="card-text">
-                                <strong>7. Accessibility:</strong><br>
-                                Ensure accessibility of exam materials for students with disabilities. Provide necessary accommodations as needed.
-                            </p>
-                            <p class="card-text">
-                                <strong>8. Emergency Protocols:</strong><br>
-                                Follow emergency procedures in case of technical glitches or disruptions during the exam. Contact support if needed.
-                            </p>
-                            <p class="card-text">
-                                <strong>9. Post-Exam Review:</strong><br>
-                                Review exam performance and feedback after completion. Address any concerns or discrepancies with instructors.
-                            </p>
-                        </div>
-                    </div>
-                    
-                </div>
-                @endif --}}
-
-
-
-
                 @if ($currentLesson && $currentLesson->content_type == 'quiz')
                 <!-- Quiz Section -->
                 <div class="quiz">
@@ -421,11 +360,6 @@
                 </div>
                 @endif
 
-
-
-
-
-
             
                 <ul class="nav nav-tabs mt-3" id="myTabs">
                     <li class="nav-item">
@@ -443,7 +377,7 @@
                     </li>
                 </ul>
 
-                <!-- Tab Content -->
+                <!-- Tabs -->
                 <div class="tab-content mt-3">
                     <!-- Overview Tab -->
                     <div class="tab-pane fade show active" id="overview">

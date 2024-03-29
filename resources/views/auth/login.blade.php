@@ -125,7 +125,7 @@
                          showConfirmButton: false,
                          didOpen: () => {
                              setTimeout(() => {
-                                window.location.href = redirect_url;
+                                window.location.href = response.redirect_url;
                              }, 500);
                          }
                      });

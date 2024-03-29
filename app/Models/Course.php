@@ -59,4 +59,9 @@ class Course extends Model
                     ->withPivot('progress') // Include the progress column from the pivot table
                     ->withTimestamps();
     }
+
+    public function discussions()
+    {
+        return $this->hasMany(Discussion::class);
+    }
 }

@@ -9,6 +9,14 @@ class CourseReview extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'course_id',
+        'rating',
+        'review',
+        'published',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

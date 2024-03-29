@@ -3,16 +3,18 @@
 use App\Http\Controllers\AdminAssessmentController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\CourseContentController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\SettingsController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseReviewController;
 use App\Http\Controllers\DiscussionController;
+use App\Http\Controllers\EnrollmentsController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstructorsController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PurchaseCourseController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\VideoController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,23 +25,18 @@ use App\Http\Controllers\VideoController;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "web" middleware group. Make something great!
 |
-*/
+ */
 
 Route::get('/', [PagesController::class, 'home'])->name('homepage');
 
-Route::get('/home', function(){
-    if(auth()->user()->role == 'instructor')
-    {
-       return redirect()->route('home.instructor');
+Route::get('/home', function () {
+    if (auth()->user()->role == 'instructor') {
+        return redirect()->route('home.instructor');
     }
-    if(auth()->user()->role == 'student')
-    {
-       return redirect()->route('home.student');
+    if (auth()->user()->role == 'student') {
+        return redirect()->route('home.student');
     }
 });
-
-
-
 
 Route::get('/register', [AuthenticationController::class, 'registerIndex'])->name('register')->middleware('guest');
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -48,10 +45,9 @@ Route::get('/login', [AuthenticationController::class, 'loginIndex'])->name('log
 Route::post('/login', [AuthenticationController::class, 'login']);
 Route::get('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 
-
 Route::group(['prefix' => 'instructor', 'middleware' => ['auth']], function () {
 
-    Route::get('/home', [HomeController::class,'instructor'])->name('home.instructor');
+    Route::get('/home', [HomeController::class, 'instructor'])->name('home.instructor');
 
     Route::get('/profile', [InstructorsController::class, 'profileIndex'])->name('instructor.profile.index');
 
@@ -60,7 +56,7 @@ Route::group(['prefix' => 'instructor', 'middleware' => ['auth']], function () {
 
 Route::group(['prefix' => 'student', 'middleware' => ['auth']], function () {
 
-    Route::get('/home', [HomeController::class,'student'])->name('home.student');
+    Route::get('/home', [HomeController::class, 'student'])->name('home.student');
 
     Route::get('/courses', [StudentController::class, 'courses'])->name('student.courses');
 
@@ -70,11 +66,10 @@ Route::group(['prefix' => 'student', 'middleware' => ['auth']], function () {
 
     Route::get('/courses/{slug}/lessons/{lessonId}', [StudentController::class, 'showLesson'])->name('courses.lessons.showLesson');
 
-    Route::post('/save-note',  [StudentController::class, 'saveNote'])->name('save-note');
+    Route::post('/save-note', [StudentController::class, 'saveNote'])->name('save-note');
     Route::get('/fetch-notes', [StudentController::class, 'fetchNotes'])->name('fetch-notes');
 
     Route::delete('/delete-note', [StudentController::class, 'deleteNote'])->name('delete-note');
-
 
     Route::post('/submit-review', [StudentController::class, 'submitReview'])->name('submit-review');
 
@@ -82,23 +77,16 @@ Route::group(['prefix' => 'student', 'middleware' => ['auth']], function () {
 
     Route::get('/fetch-assessment-score', [StudentController::class, 'fetchScore'])->name('fetch-score');
 
-
 });
-
 
 Route::post('/discussions', [DiscussionController::class, 'store'])->name('discussions.store');
 Route::get('/discussions/{course_id}', [DiscussionController::class, 'index'])->name('discussions.index');
 Route::post('/comments', [DiscussionController::class, 'commentStore'])->name('comments.store');
 
-
-
-
 Route::get('/course/{slug}', [PagesController::class, 'courseDetail'])->name('course.detail');
 Route::get('/instructor/{id}', 'InstructorController@detail')->name('instructor.detail');
 Route::get('/course/{slug}/buy', [PagesController::class, 'buy'])->name('course.buy');
 Route::get('/course/{slug}/buy/process', [PagesController::class, 'buyProcess'])->name('course.buy.process');
-
-
 
 Route::group(['prefix' => 'settings', 'middleware' => ['admin']], function () {
 
@@ -109,10 +97,8 @@ Route::group(['prefix' => 'settings', 'middleware' => ['admin']], function () {
     Route::post('/paystack_api_key', [SettingsController::class, 'savePaystack']);
 });
 
-
-
 Route::group(['prefix' => 'courses', 'middleware' => ['auth']], function () {
-    
+
     Route::get('/', [CourseController::class, 'index'])->name('courses.index');
     Route::get('/create', [CourseController::class, 'create'])->name('courses.create');
     Route::post('/store', [CourseController::class, 'store'])->name('courses.store');
@@ -121,7 +107,6 @@ Route::group(['prefix' => 'courses', 'middleware' => ['auth']], function () {
     Route::put('/{course}/update', [CourseController::class, 'update'])->name('courses.update');
     Route::delete('/{course}/delete', [CourseController::class, 'destroy'])->name('courses.destroy');
 
-  
     Route::get('courses/{course}/manage-content', [CourseContentController::class, 'manageContent'])->name('courses.manage-content');
 
     Route::post('courses/{course}/save-content', [CourseContentController::class, 'saveContent'])->name('courses.save-content');
@@ -129,35 +114,29 @@ Route::group(['prefix' => 'courses', 'middleware' => ['auth']], function () {
     Route::get('/content/{id}/edit', [CourseContentController::class, 'edit'])->name('courses.content.edit');
     Route::put('/{course}/update-content', [CourseContentController::class, 'updateContent'])->name('courses.update-content');
 
-
     Route::get('/{course}/manage-lessons', [VideoController::class, 'index'])->name('courses.manage-lessons');
 
     //////////////////////////
 
-
-
     // routes/web.php
 
-// Add Lesson Route
-Route::post('/courses/add-lesson', [CourseContentController::class, 'addLesson'])->name('courses.add-lesson');
+    Route::post('/courses/add-lesson', [CourseContentController::class, 'addLesson'])->name('courses.add-lesson');
 
+    Route::post('/courses/add-quiz', [CourseContentController::class, 'addQuiz'])->name('courses.add-quiz');
+    Route::post('/courses/add-resources', [CourseContentController::class, 'addResources'])->name('courses.add-resources');
 
-Route::post('/courses/add-quiz', [CourseContentController::class, 'addQuiz'])->name('courses.add-quiz');
-Route::post('/courses/add-resources', [CourseContentController::class, 'addResources'])->name('courses.add-resources');
+    Route::delete('/courses/delete-chapter', 'CourseController@deleteChapter')->name('courses.delete-chapter');
 
-Route::delete('/courses/delete-chapter', 'CourseController@deleteChapter')->name('courses.delete-chapter');
+    Route::get('/courses/delete-content', [CourseContentController::class, 'deleteContent'])->name('courses.delete-content');
 
-Route::get('/courses/delete-content', [CourseContentController::class, 'deleteContent'])->name('courses.delete-content');
+    Route::get('/courses/get-content', 'CourseController@getContent')->name('courses.get-content');
 
-Route::get('/courses/get-content', 'CourseController@getContent')->name('courses.get-content');
+    Route::put('/courses/edit-lesson', [CourseContentController::class, 'updateLesson'])->name('courses.edit-lesson');
 
-Route::put('/courses/edit-lesson', [CourseContentController::class, 'updateLesson'])->name('courses.edit-lesson');
-
-Route::put('/courses/edit-quiz', [CourseContentController::class, 'updateQuiz'])->name('courses.edit-quiz');
-Route::put('/courses/edit-resources', [CourseContentController::class, 'updateResource'])->name('courses.edit-resources');
-Route::put('/courses/edit-chapter', [CourseContentController::class, 'updateChapter'])->name('courses.edit-chapter');
+    Route::put('/courses/edit-quiz', [CourseContentController::class, 'updateQuiz'])->name('courses.edit-quiz');
+    Route::put('/courses/edit-resources', [CourseContentController::class, 'updateResource'])->name('courses.edit-resources');
+    Route::put('/courses/edit-chapter', [CourseContentController::class, 'updateChapter'])->name('courses.edit-chapter');
 });
-
 
 Route::group(['prefix' => 'assessments', 'middleware' => ['auth']], function () {
 
@@ -183,21 +162,41 @@ Route::group(['prefix' => 'assessments', 'middleware' => ['auth']], function () 
 
 });
 
-
 Route::get('/start-assessment/{assessmentId}', [StudentController::class, 'startQuiz'])->name('start.assessment')->middleware('auth');
 Route::post('/submit-quiz', [StudentController::class, 'submitExam'])->middleware('auth');
 
-
-
 Route::group(['prefix' => 'videos', 'middleware' => ['auth']], function () {
 
-
-Route::post('/upload', [VideoController::class, 'upload'])->name('videos.upload');
-Route::delete('/{id}', [VideoController::class, 'delete'])->name('videos.delete');
-
+    Route::post('/upload', [VideoController::class, 'upload'])->name('videos.upload');
+    Route::delete('/{id}', [VideoController::class, 'delete'])->name('videos.delete');
 
 });
 Route::post('file-upload/upload-large-files', [VideoController::class, 'uploadLargeFiles'])->name('files.upload.large');
 Route::get('/videos/create', [VideoController::class, 'create'])->name('videos.create');
 
 Route::post('/verify-payment', [PurchaseCourseController::class, 'purchaseViaPaystack'])->name('verify-payment');
+
+
+Route::group(['prefix' => 'enrollments', 'middleware' => ['auth']], function () {
+    Route::get('/', [EnrollmentsController::class, 'index'])->name('instructor.enrollments.index');
+
+    Route::get('/student-progress/{studentId}/{courseId}', [EnrollmentsController::class, 'fetchStudentProgress'])->name('student.progress');
+
+    Route::get('/fetch-assessment-score', [EnrollmentsController::class, 'fetchAssessmentScore'])->name('fetch.assessment.score');
+
+
+});
+
+Route::group(['prefix' => 'discussions', 'middleware' => ['auth']], function () {
+    Route::get('/', [DiscussionController::class, 'instructorIndex'])->name('instructor.discussions.index');
+
+    Route::get('/{discussion}/delete', [DiscussionController::class, 'delete'])->name('discussions.delete');
+
+});
+Route::group(['prefix' => 'reviews', 'middleware' => ['auth']], function () {
+    Route::get('/', [CourseReviewController::class, 'index'])->name('instructor.reviews.index');
+
+    Route::get('/{review}/toggle-publish', [CourseReviewController::class, 'togglePublish'])->name('reviews.toggle-publish');
+
+});
+

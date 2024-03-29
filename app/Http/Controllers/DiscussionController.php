@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Course;
 use App\Models\Discussion;
 use Illuminate\Http\Request;
 
@@ -31,9 +32,7 @@ class DiscussionController extends Controller
         $discussions = Discussion::with('user', 'comments.user')->where('course_id', $course_id)->get();
     
         return response()->json(['discussions' => $discussions]);
-    }
-    
-    
+    } 
 
     public function commentStore(Request $request)
     {
@@ -57,4 +56,32 @@ class DiscussionController extends Controller
         return response()->json(['message' => 'Comment created successfully', 'comment' => $comment]);
     }
 
+
+
+    public function instructorIndex(Request $request)
+    {
+        $courses = Course::where('instructor_id', auth()->user()->id)->get();
+        $selectedCourse = null;
+        $discussions = null;
+    
+        if ($request->filled('course_slug')) {
+            $selectedCourse = Course::where('slug', $request->course_slug)->firstOrFail();
+            $discussions = Discussion::where('course_id', $selectedCourse->id)->with('comments')->latest()->paginate(10);
+        }
+    
+        return view('instructors.discussions.index', compact('courses', 'selectedCourse', 'discussions'));
+    }
+
+    public function delete(Discussion $discussion)
+    {
+        // Check if the current user is the instructor of the course associated with the discussion
+        if (auth()->user()->id !== $discussion->course->instructor_id) {
+            return back()->with('error', 'You are not authorized to delete this discussion.');
+        }
+
+        // Perform deletion
+        $discussion->delete();
+
+        return redirect()->back()->with('success', 'Discussion deleted successfully.');
+    }
 }

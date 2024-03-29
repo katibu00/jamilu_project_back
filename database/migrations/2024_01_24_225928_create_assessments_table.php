@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('assessments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('instructor_id');
+            $table->unsignedBigInteger('course_id');
             $table->string('title');
             $table->integer('duration')->nullable();
             $table->enum('status', ['scheduled', 'not_scheduled'])->default('not_scheduled');
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->timestamps();
             
             $table->foreign('instructor_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
         });
     }
 

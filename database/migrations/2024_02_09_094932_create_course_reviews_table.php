@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('course_id');
             $table->unsignedTinyInteger('rating');
             $table->text('review')->nullable();
+            $table->boolean('published')->default(false);
             $table->timestamps();
 
             // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
