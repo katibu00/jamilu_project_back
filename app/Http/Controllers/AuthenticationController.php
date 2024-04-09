@@ -253,7 +253,7 @@ public function login(Request $request)
         } elseif ($role === 'instructor') {
             return '/home';
         } else {
-            return 'student.courses';
+            return 'student/courses';
         }
     }
     
