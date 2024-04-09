@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ReservedAccount;
 use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class AuthenticationController extends Controller
@@ -63,9 +62,11 @@ class AuthenticationController extends Controller
 
             // Create a wallet with welcome bonus
             // $welcome_bonus = Charges::select('welcome_bonus')->first();
-            Wallet::create([
+            DB::table('wallets')->insert([
                 'user_id' => $user->id,
                 'balance' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
             DB::commit(); // Commit the transaction
@@ -119,7 +120,7 @@ class AuthenticationController extends Controller
             throw new \Exception($monnifyResponse->responseMessage);
         }
 
-        return $monnifyResponse->responseBody->accessToken; 
+        return $monnifyResponse->responseBody->accessToken;
     }
 
     private function createMonnifyReservedAccount(User $user, $accessToken)
@@ -193,44 +194,41 @@ class AuthenticationController extends Controller
         return view('auth.login', compact('returnUrl'));
     }
 
-
     protected function getRedirectUrl(Request $request)
     {
         return $request->query('return_url', $this->getRedirectRoute($request));
     }
 
-public function login(Request $request)
-{
-    $request->validate([
-        'email_or_phone' => 'required',
-        'password' => 'required',
-    ]);
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email_or_phone' => 'required',
+            'password' => 'required',
+        ]);
 
-    $credentials = $this->getCredentials($request);
-    $rememberMe = $request->filled('rememberMe');
+        $credentials = $this->getCredentials($request);
+        $rememberMe = $request->filled('rememberMe');
 
-    try {
-        if (Auth::attempt($credentials, $rememberMe)) {
-            if ($request->ajax()) {
-                return response()->json(['success' => true, 'redirect_url' => $this->getRedirectUrl($request)]);
+        try {
+            if (Auth::attempt($credentials, $rememberMe)) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => true, 'redirect_url' => $this->getRedirectUrl($request)]);
+                } else {
+                    return redirect()->to($this->getRedirectUrl($request));
+                }
             } else {
-                return redirect()->to($this->getRedirectUrl($request));
+                throw ValidationException::withMessages([
+                    'login_error' => 'Invalid credentials.',
+                ]);
             }
-        } else {
-            throw ValidationException::withMessages([
-                'login_error' => 'Invalid credentials.',
-            ]);
-        }
-    } catch (ValidationException $e) {
-        if ($request->ajax()) {
-            return response()->json(['success' => false, 'errors' => $e->errors()], 422);
-        } else {
-            return redirect()->back()->withErrors($e->errors())->withInput()->with('error_message', 'Invalid credentials.');
+        } catch (ValidationException $e) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'errors' => $e->errors()], 422);
+            } else {
+                return redirect()->back()->withErrors($e->errors())->withInput()->with('error_message', 'Invalid credentials.');
+            }
         }
     }
-}
-
-
 
     protected function getCredentials(Request $request)
     {
@@ -245,9 +243,8 @@ public function login(Request $request)
     protected function getRedirectRoute(Request $request = null)
     {
 
-    
         $role = auth()->user()->role;
-    
+
         if ($role === 'admin') {
             return '/home';
         } elseif ($role === 'instructor') {
@@ -256,9 +253,6 @@ public function login(Request $request)
             return 'student/courses';
         }
     }
-    
-
-
 
     public function logout(Request $request)
     {
