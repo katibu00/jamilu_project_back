@@ -35,7 +35,6 @@ class CourseContentController extends Controller
                 'chapters.*.order' => 'required|integer',
                 'chapters.*.lessons' => 'array',
                 'chapters.*.lessons.*.title' => 'required|string|max:255',
-                'chapters.*.lessons.*.video_url' => 'required|url',
                 'chapters.*.lessons.*.duration' => 'required|numeric',
                 'chapters.*.lessons.*.order' => 'required|integer',
                 'chapters.*.quizzes' => 'array',
@@ -88,7 +87,6 @@ class CourseContentController extends Controller
             // Additional attributes based on the type
             switch ($type) {
                 case 'lessons':
-                    $item->content_path = $itemData['video_url'];
                     $item->duration = $itemData['duration'];
                     $item->content_type = 'lessons';
                     break;
@@ -133,7 +131,6 @@ class CourseContentController extends Controller
         $request->validate([
             'chapter_id' => 'required|exists:chapters,id',
             'lesson_title' => 'required|string|max:255',
-            'video_url' => 'required|url',
             'duration' => 'required|numeric',
             'lesson_order' => 'required|integer',
         ]);
@@ -142,7 +139,6 @@ class CourseContentController extends Controller
             'chapter_id' => $request->input('chapter_id'),
             'title' => $request->input('lesson_title'),
             'content_type' => 'lessons',
-            'video_url' => $request->input('video_url'),
             'duration' => $request->input('duration'),
             'order_number' => $request->input('lesson_order'),
         ]);

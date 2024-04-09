@@ -115,7 +115,6 @@
                 <div class="card mt-2">
                     <div class="card-header">
                         <input type="text" name="chapters[${chapterNumber}][lessons][${lessonNumber}][title]" class="form-control form-control-sm style-white mb-2" placeholder="Lesson Title" />
-                        <input type="text" name="chapters[${chapterNumber}][lessons][${lessonNumber}][video_url]" class="form-control form-control-sm style-white mb-2" placeholder="Video URL" />
                         <input type="text" name="chapters[${chapterNumber}][lessons][${lessonNumber}][duration]" class="form-control form-control-sm style-white mb-2" placeholder="Duration" />
                         <input type="number" name="chapters[${chapterNumber}][lessons][${lessonNumber}][order]" class="form-control form-control-sm style-white mb-2" placeholder="Order Number" />
                         <div class="float-right">

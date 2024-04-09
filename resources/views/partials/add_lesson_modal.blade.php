@@ -17,10 +17,7 @@
                         <label for="lessonTitle">Lesson Title</label>
                         <input type="text" class="form-control" id="lessonTitle{{ $chapter->id }}" name="lesson_title" required>
                     </div>
-                    <div class="form-group">
-                        <label for="videoUrl">Video URL</label>
-                        <input type="text" class="form-control" id="videoUrl{{ $chapter->id }}" name="video_url" required>
-                    </div>
+                   
                     <div class="form-group">
                         <label for="duration">Duration</label>
                         <input type="text" class="form-control" id="duration{{ $chapter->id }}" name="duration" required>
