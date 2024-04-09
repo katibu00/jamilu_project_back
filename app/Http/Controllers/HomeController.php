@@ -50,4 +50,8 @@ public function instructor()
     {
         return view('students.home');
     }
+    public function admin()
+    {
+        return view('admin.home');
+    }
 }

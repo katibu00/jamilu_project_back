@@ -36,7 +36,14 @@ Route::get('/home', function () {
     if (auth()->user()->role == 'student') {
         return redirect()->route('home.student');
     }
+    if (auth()->user()->role == 'admin') {
+        return redirect()->route('home.admin');
+    }
 });
+
+
+Route::get('/admin/home', [HomeController::class, 'admin'])->name('home.admin');
+
 
 Route::get('/register', [AuthenticationController::class, 'registerIndex'])->name('register')->middleware('guest');
 Route::post('/register', [AuthenticationController::class, 'register']);
@@ -96,6 +103,10 @@ Route::group(['prefix' => 'settings', 'middleware' => ['admin']], function () {
     Route::get('/paystack_api_key', [SettingsController::class, 'paystackKeys'])->name('paystack_api_key');
     Route::post('/paystack_api_key', [SettingsController::class, 'savePaystack']);
 });
+
+
+
+
 
 Route::group(['prefix' => 'courses', 'middleware' => ['auth']], function () {
 
