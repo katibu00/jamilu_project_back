@@ -207,7 +207,7 @@ class AuthenticationController extends Controller
         ]);
 
         $credentials = $this->getCredentials($request);
-        $rememberMe = $request->filled('rememberMe');
+        $rememberMe = $request->filled('remember');
 
         try {
             if (Auth::attempt($credentials, $rememberMe)) {

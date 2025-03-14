@@ -1,292 +1,219 @@
 @extends('layouts.app')
-@section('pageTitle', 'Course Details')
+
+@section('css')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css" />
+<style>
+    .course-header {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://via.placeholder.com/1920x1080');
+        background-size: cover;
+        background-position: center;
+    }
+</style>
+@endsection
+
 @section('content')
+<div class="container mx-auto px-4 py-8">
+    <!-- Course Header -->
+    <div class="course-header text-white rounded-lg shadow-lg p-8 mb-8">
+        <h1 class="text-4xl font-bold mb-4">Advanced Web Development with React and Node.js</h1>
+        <div class="flex flex-wrap items-center text-sm mb-4">
+            <span class="mr-4"><i class="fas fa-clock mr-2"></i>40 hours</span>
+            <span class="mr-4"><i class="fas fa-user-graduate mr-2"></i>10,000+ students</span>
+            <span class="mr-4"><i class="fas fa-star text-yellow-400 mr-2"></i>4.8 (2,500 reviews)</span>
+            <span><i class="fas fa-globe mr-2"></i>English</span>
+        </div>
+        <p class="text-lg mb-6">Master the latest web technologies and build powerful, scalable applications with this comprehensive course.</p>
+        <button class="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition duration-300" id="playFeaturedVideo">
+            <i class="fas fa-play mr-2"></i>Watch Course Preview
+        </button>
+    </div>
 
-    <style>
-        .play-video i {
-            display: block;
-            width: 60px;
-            height: 60px;
-            line-height: 61px;
-            border-radius: 50%;
-            z-index: 1;
-            background-color: rgba(255, 255, 255, 0.85);
-            text-align: center;
-            font-size: 24px;
-            color: #111;
-            transition: all .3s ease;
-            box-shadow: 0 0 1px 15px rgba(255, 255, 255, .1);
-            -webkit-backface-visibility: hidden;
-        }
-
-        .play-video i.icon-small {
-            width: 40px;
-            height: 40px;
-            line-height: 41px;
-            font-size: 16px;
-            box-shadow: 0 0 1px 10px rgba(255, 255, 255, .1);
-        }
-
-        .play-video:hover i {
-            -webkit-transform: scale(1.2);
-            -ms-transform: scale(1.2);
-            -o-transform: scale(1.2);
-            transform: scale(1.2);
-            background-color: #FFF;
-        }
-    </style>
-
-<section id="content" style="margin-top: -40px;">
-    <div class="content-wrap">
-        <div class="container">
-
-        <div class="row">
-            <div class="col-lg-8">
-                <!-- Main Content -->
-                <div class="card mb-4">
-                    <!-- Featured Image -->
-                    <img src="/{{ $course->thumbnail }}" class="card-img-top" alt="Course Image" style="max-height: 300px; width: 100%; height: auto;">
-                    <!-- Course Title -->
-                    <div class="card-body">
-                        <h1 class="card-title">{{ $course->title }}</h1>
-                    </div>
-                </div>
-                <!-- Tabs -->
-                <ul class="nav canvas-alt-tabs2 tabs nav-pills mb-3" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview" type="button"
-                            role="tab" aria-controls="overview" aria-selected="true">Overview</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#curriculum" type="button"
-                            role="tab" aria-controls="curriculum" aria-selected="false">Curriculum</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#instructor" type="button"
-                            role="tab" aria-controls="instructor" aria-selected="false">Instructor</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#review" type="button" role="tab"
-                            aria-controls="review" aria-selected="false">Review</button>
-                    </li>
+    <!-- Course Content -->
+    <div class="flex flex-wrap -mx-4">
+        <!-- Left Column -->
+        <div class="w-full lg:w-2/3 px-4 mb-8">
+            <!-- What You'll Learn -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">What You'll Learn</h2>
+                <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Build modern, responsive web applications</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Master React.js and its ecosystem</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Develop server-side applications with Node.js</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Implement RESTful APIs and GraphQL</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Work with databases and ORMs</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Deploy applications to cloud platforms</li>
                 </ul>
+            </div>
 
-                <!-- Tab Content -->
-                <div class="tab-content" id="courseTabsContent">
-                    <!-- Overview -->
-                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                        <div class="card">
-                            <div class="card-body">
-                                <span class="card-text">{!! $course->description !!}</span>
-                            </div>
+            <!-- Course Curriculum -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Course Curriculum</h2>
+                <div class="space-y-4" id="curriculum">
+                    <!-- Chapter 1 -->
+                    <div class="border rounded-lg">
+                        <button class="w-full text-left px-4 py-2 font-semibold bg-gray-100 hover:bg-gray-200 focus:outline-none transition duration-300" data-toggle="collapse" data-target="#chapter1">
+                            Chapter 1: Introduction to Web Development
+                            <i class="fas fa-chevron-down float-right mt-1"></i>
+                        </button>
+                        <div id="chapter1" class="p-4">
+                            <ul class="space-y-2">
+                                <li><i class="fas fa-video text-blue-500 mr-2"></i>1.1 Course Overview (15 min)</li>
+                                <li><i class="fas fa-video text-blue-500 mr-2"></i>1.2 Setting Up Your Development Environment (30 min)</li>
+                                <li><i class="fas fa-file-alt text-green-500 mr-2"></i>1.3 Web Development Basics (Reading)</li>
+                                <li><i class="fas fa-question-circle text-purple-500 mr-2"></i>1.4 Chapter Quiz</li>
+                            </ul>
                         </div>
                     </div>
-                    <!-- Curriculum -->
-                    <div class="tab-pane fade" id="curriculum" role="tabpanel" aria-labelledby="curriculum-tab">
-                        <div class="card-body">
-                            <h2 class="card-title">Course Curriculum</h2>
-                            <!-- Accordion -->
-                            <div class="accordion" id="courseAccordion">
-                                @foreach ($course->chapters as $key => $chapter)
-                                    <div class="accordion-item">
-                                        <h3 class="accordion-header" id="heading{{ $chapter->id }}">
-                                            <button class="accordion-button {{ $key === 0 ? 'collapsed' : '' }}"
-                                                type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#collapse{{ $chapter->id }}"
-                                                aria-expanded="{{ $key === 0 ? 'true' : 'false' }}"
-                                                aria-controls="collapse{{ $chapter->id }}">
-                                                <strong class="d-inline-block w-75">{{ $chapter->title }}</strong>
-                                            </button>
-                                        </h3>
-                                        <div id="collapse{{ $chapter->id }}"
-                                            class="accordion-collapse collapse {{ $key === 0 ? 'show' : '' }}"
-                                            aria-labelledby="heading{{ $chapter->id }}" data-bs-parent="#courseAccordion">
-                                            <div class="accordion-body">
-                                                <ul class="list-group list-group-flush">
-                                                    @foreach ($chapter->contents as $content)
-                                                        <li
-                                                            class="list-group-item d-flex justify-content-between align-items-center">
-                                                            <span class="w-75">
-                                                                @if ($content->content_type === 'lessons')
-                                                                    <i class="fas fa-book-open me-2"></i>
-                                                                    <!-- Lesson Icon -->
-                                                                @elseif ($content->content_type === 'quiz')
-                                                                    <i class="fas fa-pen me-2"></i> <!-- Quiz Icon -->
-                                                                @elseif ($content->content_type === 'resources')
-                                                                    <i class="fas fa-link me-2"></i> <!-- Resources Icon -->
-                                                                @endif
-                                                                {{ $content->title }}
-                                                            </span>
-                                                            @if ($content->content_type === 'lessons')
-                                                                <span
-                                                                    class="badge bg-primary rounded-pill float-right">{{ $content->duration }}</span>
-                                                            @endif
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
+                    <!-- Chapter 2 -->
+                    <div class="border rounded-lg">
+                        <button class="w-full text-left px-4 py-2 font-semibold bg-gray-100 hover:bg-gray-200 focus:outline-none transition duration-300" data-toggle="collapse" data-target="#chapter2">
+                            Chapter 2: React.js Fundamentals
+                            <i class="fas fa-chevron-down float-right mt-1"></i>
+                        </button>
+                        <div id="chapter2" class="p-4 hidden">
+                            <ul class="space-y-2">
+                                <li><i class="fas fa-video text-blue-500 mr-2"></i>2.1 Introduction to React (20 min)</li>
+                                <li><i class="fas fa-video text-blue-500 mr-2"></i>2.2 Components and Props (45 min)</li>
+                                <li><i class="fas fa-video text-blue-500 mr-2"></i>2.3 State and Lifecycle (40 min)</li>
+                                <li><i class="fas fa-file-alt text-green-500 mr-2"></i>2.4 Hands-on Exercise: Building a Todo App</li>
+                                <li><i class="fas fa-question-circle text-purple-500 mr-2"></i>2.5 Chapter Quiz</li>
+                            </ul>
                         </div>
                     </div>
+                    <!-- Add more chapters here -->
+                </div>
+            </div>
 
-                    <!-- Instructor -->
-                    <div class="tab-pane fade" id="instructor" role="tabpanel" aria-labelledby="instructor-tab">
-                        <h2 class="card-title mb-1">Meet the Instructor</h2>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <!-- Instructor Image -->
-                                        <img src="{{ asset($course->instructor->profile_image ? $course->instructor->profile_image : 'uploads/default.png') }}" class="img-fluid rounaded-circle" width="100" height="100" alt="Instructor Image">
-                                    </div>
-                                    <div class="col-md-10">
-                                        <!-- Instructor Name -->
-                                        <h3 class="card-subtitle mb-3">{{ $course->instructor->name }}</h3>
-                                        <!-- Instructor Bio -->
-                                        <p class="card-text">{!! $course->instructor->profile->biography !!}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Review -->
-                    <div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="review-tab">
-                        <div class="card-body">
-                            <h2 class="card-title">What Students Say</h2>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <!-- Review 1 -->
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center mb-3">
-                                                <!-- Reviewer Image -->
-                                                <img src="reviewer-1-image.jpg" class="img-fluid rounded-circle me-3"
-                                                    alt="Reviewer 1 Image" width="50" height="50">
-                                                <!-- Reviewer Name -->
-                                                <h4 class="card-subtitle">Jane Smith</h4>
-                                            </div>
-                                            <!-- Review Rating -->
-                                            <div class="mb-3">
-                                                <span class="text-warning">★ ★ ★ ★ ★</span>
-                                            </div>
-                                            <!-- Review Text -->
-                                            <p class="card-text">This course is amazing! I learned so much about Bootstrap
-                                                5 and how to use it to create beautiful websites. The instructor is very
-                                                clear and engaging, and the project is very fun and practical. I highly
-                                                recommend this course to anyone who wants to learn Bootstrap 5.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <!-- Review 2 -->
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center mb-3">
-                                                <!-- Reviewer Image -->
-                                                <img src="reviewer-2-image.jpg" class="img-fluid rounded-circle me-3"
-                                                    alt="Reviewer 2 Image" width="50" height="50">
-                                                <!-- Reviewer Name -->
-                                                <h4 class="card-subtitle">Jack Jones</h4>
-                                            </div>
-                                            <!-- Review Rating -->
-                                            <div class="mb-3">
-                                                <span class="text-warning">★ ★ ★ ★ ☆</span>
-                                            </div>
-                                            <!-- Review Text -->
-                                            <p class="card-text">This course is very informative and useful. I learned a
-                                                lot of new things about Bootstrap 5 and how to apply them to my own
-                                                projects. The instructor is very knowledgeable and helpful, and the project
-                                                is very realistic and challenging. I enjoyed this course and would recommend
-                                                it to anyone who wants to learn Bootstrap 5.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Instructor -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Instructor</h2>
+                <div class="flex items-center">
+                    <img src="https://via.placeholder.com/100" alt="Instructor" class="w-20 h-20 rounded-full mr-4">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800">Dr. Adebayo Ogunlesi</h3>
+                        <p class="text-gray-600">Senior Software Engineer & Educator</p>
+                        <p class="text-sm text-gray-500 mt-2">Dr. Ogunlesi has over 15 years of experience in web development and has taught thousands of students worldwide. He's passionate about empowering Nigerian youth through technology education.</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <!-- Right Bar -->
-                <div class="card">
-                    <div class="card-body">
-                        <!-- Featured Video -->
-                        <div class="embed-responsive embed-responsive-16by9 mb-4">
-                            {{-- <img src="/{{ $course->thumbnail }}" class="card-img-top embed-responsive-item" alt="Course Video"> --}}
-                            <a href="https://www.youtube.com/watch?v=hc7iuc5KZ8Y"
-                                class="magnific-popup shadow-sm d-flex align-items-center justify-content-center play-video rounded position-relative bg-color bg-color-shadow left"
-                                data-effect="mfp-iframe"
-                                style="background: url('/{{ $course->thumbnail }}') no-repeat center center / cover; height: 140px">
-                                <i class="bi-play icon-small"></i>
-                            </a>
 
-                            <!-- Play Icon -->
-                            <div class="play-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="white"
-                                    class="bi bi-play-fill" viewBox="0 0 16 16">
-                                    <path
-                                        d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
-                                </svg>
+            <!-- Reviews -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Student Reviews</h2>
+                <div class="space-y-4">
+                    <div class="border-b pb-4">
+                        <div class="flex items-center mb-2">
+                            <img src="https://via.placeholder.com/50" alt="Student" class="w-10 h-10 rounded-full mr-2">
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Chinwe Okoro</h4>
+                                <div class="text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
                             </div>
                         </div>
-                        <!-- Course Price -->
-                        @if ($course->is_free)
-                            <h2 class="card-title me-3">FREE</h2>
-                        @elseif($course->has_discount)
-                            <div class="d-flex align-items-center mb-4">
-                                <h2 class="card-title me-3">&#8358;{{ number_format($course->discount_price) }} </h2>
-                                <h4 class="card-subtitle text-muted text-decoration-line-through">&#8358;{{ number_format($course->price) }}</h4>
-                            </div>
-                        @else
-                            <h2 class="card-title me-3">&#8358;{{ number_format($course->price) }}</h2>
-                        @endif
-
-                        <!-- Course Details -->
-                        <ul class="list-group list-group-flush mb-4">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <!-- Number of Lessons -->
-                                <span><i class="fas fa-book-open me-2"></i> Lessons</span>
-                                <span class="badge bg-primary rounded-pill">{{ $lessonCount }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <!-- Number of Quizzes -->
-                                <span><i class="fas fa-pen me-2"></i> Quizzes</span>
-                                <span class="badge bg-primary rounded-pill">{{ $quizCount }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <!-- Number of Students -->
-                                <span><i class="fas fa-users me-2"></i> Students</span>
-                                <span class="badge bg-primary rounded-pill">123</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <!-- Skill Level -->
-                                <span><i class="fas fa-graduation-cap me-2"></i> Skill Level</span>
-                                <span class="badge bg-primary rounded-pill">{{ $course->level }}</span>
-                            </li>
-                        </ul>
-                        
-                        <!-- Enroll Now Button -->
-                        <a href="{{ route('course.buy', ['slug' => $course->slug]) }}" class="btn btn-primary btn-lg w-100">Enroll Now</a>
+                        <p class="text-gray-700">This course is fantastic! Dr. Ogunlesi explains complex concepts in a way that's easy to understand. I feel much more confident in my web development skills now.</p>
                     </div>
+                    <div class="border-b pb-4">
+                        <div class="flex items-center mb-2">
+                            <img src="https://via.placeholder.com/50" alt="Student" class="w-10 h-10 rounded-full mr-2">
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Oluwaseun Adeleke</h4>
+                                <div class="text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">Great course content and structure. The hands-on projects really helped solidify my understanding. Looking forward to applying these skills in my career.</p>
+                    </div>
+                    <!-- Add more reviews here -->
                 </div>
             </div>
         </div>
+
+        <!-- Right Column -->
+        <div class="w-full lg:w-1/3 px-4">
+            <div class="bg-white rounded-lg shadow-lg p-6 sticky top-8">
+                <img src="https://via.placeholder.com/400x225" alt="Course thumbnail" class="w-full rounded-lg mb-4">
+                <div class="text-3xl font-bold text-gray-800 mb-4">₦50,000</div>
+                <button class="w-full bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition duration-300 mb-4">
+                    <i class="fas fa-shopping-cart mr-2"></i>Enroll Now
+                </button>
+                <ul class="text-sm text-gray-600 space-y-2">
+                    <li><i class="fas fa-infinity mr-2"></i>Full lifetime access</li>
+                    <li><i class="fas fa-mobile-alt mr-2"></i>Access on mobile and TV</li>
+                    <li><i class="fas fa-certificate mr-2"></i>Certificate of completion</li>
+                    <li><i class="fas fa-user-friends mr-2"></i>Join 1000+ learners</li>
+                </ul>
+            </div>
+        </div>
     </div>
+</div>
+
+<!-- Video Modal -->
+<div id="videoModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-4 w-full max-w-3xl">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-800">Course Preview</h3>
+            <button id="closeVideoModal" class="text-gray-600 hover:text-gray-800">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="featuredVideoPlayer"></div>
     </div>
-</section>
+</div>
 @endsection
 
 @section('js')
-
-    <script>
-        $(document).ready(function() {
-            $('.magnific-popup').magnificPopup({
-                type: 'iframe'
-                // Add any additional options you need
-            });
+<script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script>
+<script>
+    // Curriculum collapse functionality
+    document.querySelectorAll('[data-toggle="collapse"]').forEach(button => {
+        button.addEventListener('click', () => {
+            const target = document.querySelector(button.getAttribute('data-target'));
+            target.classList.toggle('hidden');
+            button.querySelector('i').classList.toggle('fa-chevron-down');
+            button.querySelector('i').classList.toggle('fa-chevron-up');
         });
-    </script>
+    });
+
+    // Video modal functionality
+    const videoModal = document.getElementById('videoModal');
+    const playFeaturedVideo = document.getElementById('playFeaturedVideo');
+    const closeVideoModal = document.getElementById('closeVideoModal');
+    const featuredVideoPlayer = document.getElementById('featuredVideoPlayer');
+
+    playFeaturedVideo.addEventListener('click', () => {
+        videoModal.classList.remove('hidden');
+        
+        // Create video element
+        const videoElement = document.createElement('video');
+        videoElement.setAttribute('controls', '');
+        videoElement.setAttribute('playsinline', '');
+        
+        // Set the source to your video file
+        const sourceElement = document.createElement('source');
+        sourceElement.src = "{{ asset('/uploads/65cb6089aea91.mp4') }}";
+        sourceElement.type = 'video/mp4';
+        
+        videoElement.appendChild(sourceElement);
+        featuredVideoPlayer.appendChild(videoElement);
+
+        // Initialize Plyr
+        const player = new Plyr(videoElement);
+    });
+
+    closeVideoModal.addEventListener('click', () => {
+        videoModal.classList.add('hidden');
+        featuredVideoPlayer.innerHTML = '';
+    });
+</script>
 @endsection

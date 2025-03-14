@@ -11,7 +11,7 @@ class PagesController extends Controller
     public function home()
     {
         $courses = Course::all();
-        return view('home', ['courses' => $courses]);
+        return view('landing.pages.home', ['courses' => $courses]);
     }
 
     public function courseDetail($slug)

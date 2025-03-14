@@ -2,129 +2,121 @@
 @section('pageTitle', 'Edit Course Content')
 @section('content')
 
-    <section id="content" style="margin-top: -40px;">
-        <div class="content-wrap">
-            <div class="container">
-
-                {{-- <h2>Edit Course Content</h2> --}}
-                <div class="row mt-4">
-                    @foreach ($course->chapters as $chapter)
-                        <div class="card mb-3">
-                            @if (session('success'))
-                                <div class="container">
-                                    <div class="alert alert-success">
-                                        {{ session('success') }}
-                                    </div>
-                                </div>
-                            @endif
-
-                            @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-                            <div class="card-header">
-                                <h5>{{ $chapter->title }}</h5>
-                                {!! $chapter->description !!}
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#editChapterModal{{ $chapter->id }}">Edit Chapter</button>
-                                <button class="btn btn-danger btn-sm"
-                                    onclick="confirmDeleteChapter({{ $chapter->id }})">Delete Chapter</button>
-                            </div>
-                            <div class="card-body">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Title</th>
-                                            <th>Type</th>
-                                            <th>Order #</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($chapter->contents as $content)
-                                            <tr>
-                                                <td>{{ $content->title }}</td>
-                                                <td>{{ $content->content_type }}</td>
-                                                <td>{{ $content->order_number }}</td>
-                                                <td>
-                                                    @if ($content->content_type === 'lessons')
-                                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                                            data-bs-target="#editLessonModal{{ $content->id }}">Edit
-                                                            Lesson</button>
-                                                    @elseif($content->content_type === 'quiz')
-                                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                                            data-bs-target="#editQuizModal{{ $content->id }}">Edit
-                                                            Quiz</button>
-                                                    @elseif($content->content_type === 'resources')
-                                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                                            data-bs-target="#editResourceModal{{ $content->id }}">Edit
-                                                            Resource</button>
-                                                    @endif
-                                                    <button class="btn btn-danger btn-sm"
-                                                        onclick="confirmDeleteContent({{ $content->id }}, '{{ $content->title }}')">Delete</button>
-                                                </td>
-                                            </tr>
-                                            @if ($chapter->contents->contains('content_type', 'lessons'))
-                                                @include('partials.edit_lesson_modal')
-                                            @endif
-
-                                            @if ($chapter->contents->contains('content_type', 'quiz'))
-                                                @include('partials.edit_quiz_modal')
-                                            @endif
-
-                                            @if ($chapter->contents->contains('content_type', 'resources'))
-                                                @include('partials.edit_resource_modal')
-                                            @endif
-                                        @endforeach
-                                    </tbody>
-                                </table>
-
-                                <!-- Add Content Buttons -->
-                                <div class="mt-3">
-                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#addLessonModal{{ $chapter->id }}">Add Lesson</button>
-                                    <button class="btn btn-info btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#addQuizModal{{ $chapter->id }}">Add Quiz</button>
-                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#addResourceModal{{ $chapter->id }}">Add Resource</button>
-                                </div>
-                            </div>
+<section id="content" class="-mt-10">
+    <div class="container mx-auto">
+        <div class="my-20 space-y-6">
+            @foreach ($course->chapters as $chapter)
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    @if (session('success'))
+                        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4">
+                            {{ session('success') }}
                         </div>
+                    @endif
 
-                <!-- Edit Chapter Modal -->
-                @include('partials.edit_chapter_modal')
+                    @if ($errors->any())
+                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+                            <ul class="list-disc list-inside">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
+                    <div class="bg-blue-100 px-4 py-3 flex justify-between items-center">
+                        <div>
+                            <h5 class="text-lg font-semibold">{{ $chapter->title }}</h5>
+                            <div class="text-sm text-gray-600">{!! $chapter->description !!}</div>
+                        </div>
+                        <div class="space-x-2">
+                            <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm" onclick="openModal('editChapterModal{{ $chapter->id }}')">Edit Chapter</button>
+                            <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm" onclick="confirmDeleteChapter({{ $chapter->id }})">Delete Chapter</button>
+                        </div>
+                    </div>
 
+                    <div class="p-4">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order #</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach ($chapter->contents as $content)
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $content->title }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $content->content_type }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $content->order_number }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap space-x-2">
+                                            @if ($content->content_type === 'lessons')
+                                                <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm" onclick="openModal('editLessonModal{{ $content->id }}')">Edit Lesson</button>
+                                            @elseif($content->content_type === 'quiz')
+                                                <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm" onclick="openModal('editQuizModal{{ $content->id }}')">Edit Quiz</button>
+                                            @elseif($content->content_type === 'resources')
+                                                <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm" onclick="openModal('editResourceModal{{ $content->id }}')">Edit Resource</button>
+                                            @endif
+                                            <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm" onclick="confirmDeleteContent({{ $content->id }}, '{{ $content->title }}')">Delete</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
 
+                        <div class="mt-4 space-x-2">
+                            <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded" onclick="openModal('addLessonModal{{ $chapter->id }}')">Add Lesson</button>
+                            <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" onclick="openModal('addQuizModal{{ $chapter->id }}')">Add Quiz</button>
+                            <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded" onclick="openModal('addResourceModal{{ $chapter->id }}')">Add Resource</button>
+                        </div>
+                    </div>
+                </div>
 
+                @include('partials.edit_chapter_modal', ['chapter' => $chapter])
+                @include('partials.add_lesson_modal', ['chapter' => $chapter])
+                @include('partials.add_quiz_modal', ['chapter' => $chapter])
+                @include('partials.add_resource_modal', ['chapter' => $chapter])
 
-                <!-- Modals for adding content -->
-                @include('partials.add_lesson_modal')
-                @include('partials.add_quiz_modal')
-                @include('partials.add_resource_modal')
+                @foreach ($chapter->contents as $content)
+                    @if ($content->content_type === 'lessons')
+                        @include('partials.edit_lesson_modal', ['content' => $content])
+                    @elseif ($content->content_type === 'quiz')
+                        @include('partials.edit_quiz_modal', ['content' => $content])
+                    @elseif ($content->content_type === 'resources')
+                        @include('partials.edit_resource_modal', ['content' => $content])
+                    @endif
                 @endforeach
-
-
-            </div>
-            </div>
+            @endforeach
         </div>
-    </section>
+    </div>
+</section>
 @endsection
 
 @section('js')
-    <script>
-        function confirmDeleteContent(contentId, contentTitle) {
-            var confirmation = confirm("Are you sure you want to delete the content '" + contentTitle + "'?");
-            if (confirmation) {
-                window.location.href = "{{ route('courses.delete-content') }}?contentId=" + contentId;
-            }
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+
+    function confirmDeleteContent(contentId, contentTitle) {
+        var confirmation = confirm("Are you sure you want to delete the content '" + contentTitle + "'?");
+        if (confirmation) {
+            window.location.href = "{{ route('courses.delete-content') }}?contentId=" + contentId;
         }
-    </script>
+    }
+
+    function confirmDeleteChapter(chapterId) {
+        var confirmation = confirm("Are you sure you want to delete this chapter?");
+        if (confirmation) {
+            // Add your delete chapter logic here
+        }
+    }
+</script>
 
 <script src="/assets/js/components/tinymce/tinymce.min.js"></script>
 
@@ -143,6 +135,4 @@
         }
     });
 </script>
-
-
 @endsection

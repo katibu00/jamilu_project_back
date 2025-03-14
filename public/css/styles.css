@@ -1,0 +1,85 @@
+/* Custom styles */
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Georgia', serif;
+}
+
+.btn {
+    @apply font-bold py-2 px-4 rounded transition duration-300;
+}
+
+.btn-blue {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.active-link {
+    @apply text-blue-600 font-semibold;
+}
+
+/* Improved card styles */
+.course-card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden transition duration-300 transform hover:scale-105;
+}
+
+.course-card img {
+    @apply w-full h-48 object-cover;
+}
+
+.course-card-content {
+    @apply p-6;
+}
+
+.course-card h2 {
+    @apply text-2xl font-semibold mb-2;
+}
+
+.course-card p {
+    @apply text-gray-600 mb-4;
+}
+
+/* Improved header styles */
+#topBar {
+    @apply transition-all duration-300;
+}
+
+#mainHeader {
+    @apply transition-all duration-300;
+}
+
+#searchBar {
+    @apply transition-all duration-300;
+}
+
+/* Improved dropdown styles */
+.dropdown {
+    @apply absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden;
+}
+
+.dropdown a {
+    @apply block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100;
+}
+
+/* Notification badge */
+.notification-badge {
+    @apply absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full;
+}
+.active-link {
+    @apply text-blue-600 border-b-2 border-blue-600;
+}
+.active {
+    @apply text-blue-600 font-semibold;
+}
+#languageDropdown {
+    z-index: 1000;
+}
+/* Responsive styles */
+@media (max-width: 768px) {
+    .container {
+        @apply px-4;
+    }
+}
+
+
