@@ -29,6 +29,52 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PagesController::class, 'home'])->name('homepage');
 
+
+Route::middleware('guest')->group(function () {
+    // Login Routes
+    Route::get('/login', [AuthenticationController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthenticationController::class, 'login']);
+    
+    // Registration Routes (assuming you already have these)
+    Route::get('/register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+    Route::post('/register', 'Auth\RegisterController@register');
+    
+    // Password Reset Routes
+    Route::get('/forgot-password', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+    Route::post('/forgot-password', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+    Route::get('/reset-password/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+    Route::post('/reset-password', 'Auth\ResetPasswordController@reset')->name('password.update');
+    
+    // Social Login Routes
+    Route::get('/auth/google', [AuthenticationController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [AuthenticationController::class, 'handleGoogleCallback']);
+    
+    Route::get('/auth/facebook', [AuthenticationController::class, 'redirectToFacebook'])->name('auth.facebook');
+    Route::get('/auth/facebook/callback', [AuthenticationController::class, 'handleFacebookCallback']);
+    
+    Route::get('/auth/linkedin', [AuthenticationController::class, 'redirectToLinkedin'])->name('auth.linkedin');
+    Route::get('/auth/linkedin/callback', [AuthenticationController::class, 'handleLinkedinCallback']);
+});
+
+// Authenticated Routes
+Route::middleware('auth')->group(function () {
+    // Logout Route
+    Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
+    
+    // Dashboard Routes based on roles
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/dashboard', 'Admin\DashboardController@index')->name('admin.dashboard');
+    });
+    
+    Route::middleware('role:instructor')->group(function () {
+        Route::get('/instructor/dashboard', [HomeController::class, 'instructor'])->name('instructor.dashboard');
+    });
+    
+    Route::middleware('role:student')->group(function () {
+        Route::get('/student/dashboard', [HomeController::class, 'student'])->name('student.dashboard');
+    });
+});
+
 Route::get('/home', function () {
     if (auth()->user()->role == 'instructor') {
         return redirect()->route('home.instructor');
@@ -41,6 +87,11 @@ Route::get('/home', function () {
     }
 });
 
+
+// Instructor Profile Completion Route
+Route::get('/instructor/profile/complete', function () {
+    return view('instructor.profile.complete');
+})->middleware(['auth', 'role:instructor'])->name('instructor.profile.complete');
 
 Route::get('/admin/home', [HomeController::class, 'admin'])->name('home.admin');
 

@@ -404,83 +404,87 @@
                 <div class="container mx-auto px-4">
                     <div class="flex justify-between items-center mb-12" data-aos="fade-up">
                         <h2 class="text-3xl md:text-4xl font-bold gradient-text">Popular Courses</h2>
-                        <a href="/courses" class="inline-flex items-center text-green-600 font-semibold hover:text-green-800 transition">
+                        <a href="{{ route('courses.index') }}" class="inline-flex items-center text-green-600 font-semibold hover:text-green-800 transition">
                             <span>View All Courses</span>
                             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                             </svg>
                         </a>
                     </div>
-            
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <!-- Course Card 1 -->
-                        <div class="bg-white rounded-xl overflow-hidden shadow-xl transition duration-300 card-hover custom-shadow" data-aos="fade-up" data-aos-delay="100">
-                            <div class="relative">
-                                <span class="course-badge bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</span>
-                                <img src="https://via.placeholder.com/600x340/3E92CC/FFFFFF?text=Web+Development" alt="Web Development Course" class="w-full h-52 object-cover">
-                                <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-blue-900 to-transparent p-4 text-white">
-                                    <span class="text-lg font-semibold">Web Development Fundamentals</span>
+                        @forelse($featuredCourses as $course)
+                            <div class="bg-white rounded-xl overflow-hidden shadow-xl transition duration-300 card-hover custom-shadow" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
+                                <div class="relative">
+                                    @if($course->is_free)
+                                        <span class="course-badge bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full">Free</span>
+                                    @elseif($course->has_discount)
+                                        <span class="course-badge bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">On Sale</span>
+                                    @elseif($loop->first)
+                                        <span class="course-badge bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</span>
+                                    @endif
+                                    
+                                    <img src="{{ $course->thumbnail ? asset('storage/' . $course->thumbnail) : 'https://via.placeholder.com/600x340/3E92CC/FFFFFF?text=' . urlencode($course->title) }}" 
+                                        alt="{{ $course->title }}" 
+                                        class="w-full h-52 object-cover">
+                                    
+                                    <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-blue-900 to-transparent p-4 text-white">
+                                        <span class="text-lg font-semibold">{{ $course->title }}</span>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <div class="flex space-x-2">
+                                            @if($course->tags)
+                                                @foreach(json_decode($course->tags) as $tag)
+                                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">{{ $tag }}</span>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                        <span class="text-sm text-gray-500 capitalize">{{ $course->level }}</span>
+                                    </div>
+                                    
+                                    <h3 class="text-xl font-semibold text-blue-900 mb-2">{{ $course->title }}</h3>
+                                    <p class="text-gray-600 mb-4">{{ $course->short_description }}</p>
+                                    
+                                    <div class="flex items-center mb-4">
+                                        <img src="{{ $course->instructor->profile_photo_url }}" 
+                                            alt="{{ $course->instructor->name }}" 
+                                            class="w-8 h-8 rounded-full mr-2">
+                                        <span class="text-sm text-gray-600">{{ $course->instructor->name }}</span>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            @if($course->is_free)
+                                                <span class="text-green-600 font-bold">Free</span>
+                                            @elseif($course->has_discount)
+                                                <div class="flex items-center">
+                                                    <span class="text-green-600 font-bold">₦{{ number_format($course->discount_price, 2) }}</span>
+                                                    <span class="text-gray-400 line-through text-sm ml-2">₦{{ number_format($course->price, 2) }}</span>
+                                                </div>
+                                            @else
+                                                <span class="text-green-600 font-bold">₦{{ number_format($course->price, 2) }}</span>
+                                            @endif
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span class="text-gray-500 text-sm mr-3">
+                                                <i class="fas fa-clock mr-1"></i>
+                                                {{ $course->duration_minutes ? floor($course->duration_minutes / 60) . 'h ' . ($course->duration_minutes % 60) . 'm' : 'Self-paced' }}
+                                            </span>
+                                            <a href="{{ route('course.detail', $course->slug) }}" 
+                                            class="btn-primary text-white px-4 py-2 rounded-md text-sm transition">
+                                                {{ $course->is_free ? 'Start Now' : 'Enroll Now' }}
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="p-6">
-                                <div class="flex justify-between items-center mb-3">
-                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Programming</span>
-                                    <span class="text-sm text-gray-500">Beginner</span>
-                                </div>
-                                <h3 class="text-xl font-semibold text-blue-900 mb-2">Web Development Fundamentals</h3>
-                                <p class="text-gray-600 mb-4">Learn HTML, CSS, and JavaScript to build responsive websites from scratch.</p>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-green-600 font-bold">₦15,000</span>
-                                    <a href="/courses/web-dev-fundamentals" class="btn-primary text-white px-4 py-2 rounded-md text-sm transition">Enroll Now</a>
-                                </div>
+                        @empty
+                            <div class="col-span-3 text-center py-12">
+                                <p class="text-gray-500">No featured courses available at the moment.</p>
                             </div>
-                        </div>
-            
-                        <!-- Course Card 2 -->
-                        <div class="bg-white rounded-xl overflow-hidden shadow-xl transition duration-300 card-hover custom-shadow" data-aos="fade-up" data-aos-delay="200">
-                            <div class="relative">
-                                <span class="course-badge bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full">Bestseller</span>
-                                <img src="https://via.placeholder.com/600x340/4CB944/FFFFFF?text=MS+Office" alt="Microsoft Office Course" class="w-full h-52 object-cover">
-                                <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-blue-900 to-transparent p-4 text-white">
-                                    <span class="text-lg font-semibold">Microsoft Office Masterclass</span>
-                                </div>
-                            </div>
-                            <div class="p-6">
-                                <div class="flex justify-between items-center mb-3">
-                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Office Skills</span>
-                                    <span class="text-sm text-gray-500">All Levels</span>
-                                </div>
-                                <h3 class="text-xl font-semibold text-blue-900 mb-2">Microsoft Office Masterclass</h3>
-                                <p class="text-gray-600 mb-4">Master Word, Excel, and PowerPoint for professional workplace productivity.</p>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-green-600 font-bold">₦10,000</span>
-                                    <a href="/courses/ms-office-masterclass" class="btn-primary text-white px-4 py-2 rounded-md text-sm transition">Enroll Now</a>
-                                </div>
-                            </div>
-                        </div>
-            
-                        <!-- Course Card 3 -->
-                        <div class="bg-white rounded-xl overflow-hidden shadow-xl transition duration-300 card-hover custom-shadow" data-aos="fade-up" data-aos-delay="300">
-                            <div class="relative">
-                                <span class="course-badge bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">New</span>
-                                <img src="https://via.placeholder.com/600x340/FFD700/333333?text=Python" alt="Python Programming Course" class="w-full h-52 object-cover">
-                                <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-blue-900 to-transparent p-4 text-white">
-                                    <span class="text-lg font-semibold">Python for Data Analysis</span>
-                                </div>
-                            </div>
-                            <div class="p-6">
-                                <div class="flex justify-between items-center mb-3">
-                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Programming</span>
-                                    <span class="text-sm text-gray-500">Intermediate</span>
-                                </div>
-                                <h3 class="text-xl font-semibold text-blue-900 mb-2">Python for Data Analysis</h3>
-                                <p class="text-gray-600 mb-4">Learn Python programming with focus on data analysis and visualization.</p>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-green-600 font-bold">₦20,000</span>
-                                    <a href="/courses/python-data-analysis" class="btn-primary text-white px-4 py-2 rounded-md text-sm transition">Enroll Now</a>
-                                </div>
-                            </div>
-                        </div>
+                        @endforelse
                     </div>
                 </div>
             </section>

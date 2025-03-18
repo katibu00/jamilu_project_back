@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
 
 class AuthenticationController extends Controller
 {
@@ -18,173 +18,63 @@ class AuthenticationController extends Controller
         return view('auth.register');
     }
 
+
     public function register(Request $request)
     {
-        DB::beginTransaction();
-
-        try {
-            // Validate the request data
-            $validatedData = $request->validate([
-                'name' => 'required|string',
-                'phone' => 'required|string|unique:users',
-                'email' => 'required|email|unique:users',
-                'password' => 'required|min:6',
-            ]);
-
-            $fullName = $validatedData['name'];
-            $firstName = explode(' ', $fullName)[0];
-            $randomString = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 4);
-            $username = $firstName . $randomString;
-
-            // Create a user instance
-            $user = new User([
-                'name' => $validatedData['name'],
-                'phone' => $validatedData['phone'],
-                'email' => $validatedData['email'],
-                'username' => $username . $randomString,
-                'password' => Hash::make($validatedData['password']),
-            ]);
-
-            // Get the Monnify access token
-            // $accessToken = $this->getAccessToken();
-
-            // Create Monnify reserved account
-            // $monnifyReservedAccount = $this->createMonnifyReservedAccount($user, $accessToken);
-
-            // Save user and Monnify account details
-            $user->save();
-            // ReservedAccount::create([
-            //     'user_id' => $user->id,
-            //     'customer_email' => $monnifyReservedAccount->customerEmail,
-            //     'customer_name' => $monnifyReservedAccount->customerName,
-            //     'accounts' => json_encode($monnifyReservedAccount->accounts),
-            // ]);
-
-            // Create a wallet with welcome bonus
-            // $welcome_bonus = Charges::select('welcome_bonus')->first();
-            DB::table('wallets')->insert([
-                'user_id' => $user->id,
-                'balance' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            DB::commit(); // Commit the transaction
-            return response()->json(['message' => 'User account created successfully']);
-        } catch (\Exception $e) {
-            DB::rollback(); // Rollback the transaction on exception
-            Log::error('Registration Error: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+        // Validate request data
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'phone' => ['required', 'string', 'unique:users,phone', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'min:10'],
+            'password' => [
+                'required', 
+                'confirmed', 
+                Password::min(6)
+                    // ->mixedCase()
+                    // ->numbers()
+                    // ->symbols()
+            ],
+            'terms' => ['required', 'accepted'],
+            'referral_code' => ['nullable', 'string', 'exists:users,referral_code']
+        ], [
+            'terms.accepted' => 'You must agree to the Terms of Service and Privacy Policy'
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
         }
-    }
-
-    private function getAccessToken()
-    {
-        $monnifyKeys = DB::table('monnify_a_p_i_keys')->first();
-        $apiKey = $monnifyKeys->public_key;
-        $secretKey = $monnifyKeys->secret_key;
-
-        $encodedKey = base64_encode($apiKey . ':' . $secretKey);
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://sandbox.monnify.com/api/v1/auth/login',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json',
-                "Authorization: Basic $encodedKey",
-            ),
-        ));
-
-        $response = curl_exec($curl);
-        $httpStatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $err = curl_error($curl);
-        curl_close($curl);
-
-        if ($err) {
-            throw new \Exception("cURL Error: " . $err);
+        
+        // Get referrer if referral code is provided
+        $referredBy = null;
+        if ($request->filled('referral_code')) {
+            $referrer = User::where('referral_code', $request->referral_code)->first();
+            if ($referrer) {
+                $referredBy = $referrer->id;
+            }
         }
-
-        if ($httpStatus !== 200) {
-            throw new \Exception("Monnify API request failed. Error Response: " . $response);
-        }
-
-        $monnifyResponse = json_decode($response);
-
-        if (!$monnifyResponse->requestSuccessful) {
-            throw new \Exception($monnifyResponse->responseMessage);
-        }
-
-        return $monnifyResponse->responseBody->accessToken;
-    }
-
-    private function createMonnifyReservedAccount(User $user, $accessToken)
-    {
-        $accountReference = uniqid('abc', true);
-        $accountName = $user->name;
-
-        $monnifyKeys = DB::table('monnify_a_p_i_keys')->first();
-        $contractCode = $monnifyKeys->contract_code;
-
-        $currencyCode = 'NGN';
-        $contractCode = $contractCode;
-        $customerEmail = $user->email;
-        $customerName = $user->name;
-        $getAllAvailableBanks = true;
-
-        $data = [
-            'accountReference' => $accountReference,
-            'accountName' => $accountName,
-            'currencyCode' => $currencyCode,
-            'contractCode' => $contractCode,
-            'customerEmail' => $customerEmail,
-            'customerName' => $customerName,
-            'getAllAvailableBanks' => $getAllAvailableBanks,
-        ];
-
-        $jsonData = json_encode($data);
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://sandbox.monnify.com/api/v2/bank-transfer/reserved-accounts',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => $jsonData,
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $accessToken,
-            ),
-        ));
-
-        $response = curl_exec($curl);
-        $httpStatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $err = curl_error($curl);
-        curl_close($curl);
-
-        if ($err) {
-            throw new \Exception("cURL Error: " . $err);
-        }
-
-        if ($httpStatus !== 200) {
-            throw new \Exception("Monnify API request failed. Error Response: " . $response);
-        }
-
-        $monnifyResponse = json_decode($response);
-
-        if (!$monnifyResponse->requestSuccessful) {
-            throw new \Exception($monnifyResponse->responseMessage);
-        }
-
-        return $monnifyResponse->responseBody;
+        
+        // Create the user
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
+            'role' => 'student',
+            'referral_code' => Str::random(8),
+            'referred_by' => $referredBy,
+        ]);
+        
+       
+        
+        // Return success response
+        return response()->json([
+            'success' => true,
+            'message' => 'Your account has been created successfully!',
+            'redirect' => '/login'
+        ]);
     }
 
     public function loginIndex(Request $request)
@@ -194,66 +84,106 @@ class AuthenticationController extends Controller
         return view('auth.login', compact('returnUrl'));
     }
 
-    protected function getRedirectUrl(Request $request)
-    {
-        return $request->query('return_url', $this->getRedirectRoute($request));
-    }
-
     public function login(Request $request)
     {
-        $request->validate([
-            'email_or_phone' => 'required',
-            'password' => 'required',
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'login' => 'required|string',
+            'password' => 'required|string',
         ]);
 
-        $credentials = $this->getCredentials($request);
-        $rememberMe = $request->filled('remember');
-
-        try {
-            if (Auth::attempt($credentials, $rememberMe)) {
-                if ($request->ajax()) {
-                    return response()->json(['success' => true, 'redirect_url' => $this->getRedirectUrl($request)]);
-                } else {
-                    return redirect()->to($this->getRedirectUrl($request));
-                }
-            } else {
-                throw ValidationException::withMessages([
-                    'login_error' => 'Invalid credentials.',
-                ]);
-            }
-        } catch (ValidationException $e) {
-            if ($request->ajax()) {
-                return response()->json(['success' => false, 'errors' => $e->errors()], 422);
-            } else {
-                return redirect()->back()->withErrors($e->errors())->withInput()->with('error_message', 'Invalid credentials.');
-            }
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
         }
-    }
 
-    protected function getCredentials(Request $request)
-    {
-        $field = filter_var($request->email_or_phone, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
-
-        return [
-            $field => $request->email_or_phone,
-            'password' => $request->password,
+        // Determine if login is email or phone
+        $loginField = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+        $credentials = [
+            $loginField => $request->login,
+            'password' => $request->password
         ];
+
+        // Attempt login
+        if (Auth::attempt($credentials, $request->remember)) {
+            $request->session()->regenerate();
+            
+            // Get user role and determine redirect path
+            $user = Auth::user();
+            $redirectPath = $this->getRedirectPath($user);
+            
+            return response()->json([
+                'message' => 'Login successful!',
+                'redirect' => $redirectPath
+            ]);
+        }
+
+        // Authentication failed
+        return response()->json([
+            'message' => 'These credentials do not match our records.'
+        ], 401);
     }
 
-    protected function getRedirectRoute(Request $request = null)
+    protected function getRedirectPath($user)
     {
-
-        $role = auth()->user()->role;
-
-        if ($role === 'admin') {
-            return '/home';
-        } elseif ($role === 'instructor') {
-            return '/home';
-        } else {
-            return 'student/courses';
+        switch ($user->role) {
+            case 'admin':
+                return route('admin.dashboard');
+            case 'instructor':
+                return route('instructor.dashboard');
+            case 'student':
+            default:
+                return route('student.dashboard');
         }
     }
 
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+   
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+            $user = $this->findOrCreateUser($googleUser, 'google');
+            
+            Auth::login($user);
+            
+            return redirect($this->getRedirectPath($user));
+            
+        } catch (\Exception $e) {
+            return redirect('/login')->with('error', 'Failed to login with Google. Please try again.');
+        }
+    }
+
+  
+    protected function findOrCreateUser($socialUser, $provider)
+    {
+        // Find user by social ID or email
+        $user = User::where('provider_id', $socialUser->getId())
+                    ->orWhere('email', $socialUser->getEmail())
+                    ->first();
+
+        if (!$user) {
+            // Create new user
+            $user = User::create([
+                'name' => $socialUser->getName(),
+                'email' => $socialUser->getEmail(),
+                'provider' => $provider,
+                'provider_id' => $socialUser->getId(),
+                'role' => 'student', // Default role
+                'email_verified_at' => now(), // Social login is considered verified
+                'password' => bcrypt(str_random(16)), // Random password
+            ]);
+        }
+
+        return $user;
+    }
+
+  
     public function logout(Request $request)
     {
         Auth::logout();

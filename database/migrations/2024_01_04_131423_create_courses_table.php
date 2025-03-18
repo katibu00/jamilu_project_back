@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('slug');
+            $table->string('slug')->unique(); 
             $table->unsignedBigInteger('instructor_id');
+            $table->foreign('instructor_id')->references('id')->on('users')->onDelete('cascade'); 
             $table->text('short_description')->nullable();
             $table->longText('description');
-            $table->string('level')->nullable();
-            $table->string('language')->nullable();
+            $table->enum('level', ['beginner', 'intermediate', 'advanced', 'all-levels'])->default('all-levels');
+            $table->enum('language', ['english', 'hausa'])->default('english');
             $table->boolean('featured')->default(false);
             $table->boolean('is_free')->default(false);
             $table->decimal('price', 10, 2)->nullable();
@@ -27,9 +28,16 @@ return new class extends Migration
             $table->boolean('has_discount')->default(false);
             $table->string('featured_video')->nullable();
             $table->string('thumbnail')->nullable();
-            $table->json('tags')->nullable(); 
-
+            $table->json('tags')->nullable();
+            $table->integer('duration_minutes')->nullable(); 
+            $table->boolean('published')->default(false); 
             $table->timestamps();
+            $table->softDeletes(); 
+            
+            // Add indexes for common queries
+            $table->index('featured');
+            $table->index(['published', 'featured']);
+            $table->index(['level', 'language']);
         });
 
         // Add foreign key constraints if needed

@@ -17,10 +17,18 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->integer('order_number');
+            $table->boolean('is_free')->default(false); // Add to allow preview chapters
+            $table->boolean('published')->default(false); // Add to control visibility
             $table->timestamps();
-
+            $table->softDeletes(); // Add soft deletes for chapters
+            
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
-
+            
+            // Add unique constraint for order within a course
+            $table->unique(['course_id', 'order_number']);
+            
+            // Add index for common queries
+            $table->index(['course_id', 'published']);
         });
     }
 

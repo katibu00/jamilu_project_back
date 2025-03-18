@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+
         Schema::create('contents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('chapter_id')->constrained()->onDelete('cascade');
@@ -21,6 +22,13 @@ return new class extends Migration
             $table->unsignedDecimal('duration', 5, 2)->nullable();
             $table->integer('order_number');
             $table->timestamps();
+
+            // Add unique constraint for order within a chapter
+            $table->unique(['chapter_id', 'order_number']);
+
+            // Add index for common queries
+            $table->index(['chapter_id']);
+            $table->index('content_type');
         });
 
     }

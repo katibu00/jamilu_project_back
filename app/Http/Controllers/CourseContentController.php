@@ -8,6 +8,10 @@ use App\Models\Content;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+
 
 class CourseContentController extends Controller
 {
@@ -20,10 +24,10 @@ class CourseContentController extends Controller
         }
         $quizzes = Assessment::where('instructor_id', auth()->user()->id)->get();
 
-        return view('instructors.courses.content', ['course' => $course, 'quizzes' => $quizzes]);
+        return view('instructor.courses.content', ['course' => $course, 'quizzes' => $quizzes]);
     }
 
-    public function saveContent(Request $request, $courseId)
+    public function sav99eContent(Request $request, $courseId)
     {
         // dd($request->all());
 
@@ -110,6 +114,134 @@ class CourseContentController extends Controller
         }
     }
     
+
+
+
+    public function saveContent(Request $request, Course $course)
+    {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'chapters' => 'required|array',
+            'chapters.*.title' => 'required|string|max:255',
+            'chapters.*.order' => 'required|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            DB::beginTransaction();
+            
+            // Process each chapter
+            foreach ($request->chapters as $chapterData) {
+                // Create or update chapter
+                $chapter = Chapter::create([
+                    'course_id' => $course->id,
+                    'title' => $chapterData['title'],
+                    'description' => $chapterData['description'] ?? null,
+                    'order_number' => $chapterData['order'],
+                    // Default values for is_free and published
+                    'is_free' => false,
+                    'published' => true,
+                ]);
+                
+                // Process lessons if they exist
+                if (isset($chapterData['lessons']) && is_array($chapterData['lessons'])) {
+                    foreach ($chapterData['lessons'] as $lessonData) {
+                        // Calculate duration in decimal hours
+                        $hours = isset($lessonData['hours']) ? intval($lessonData['hours']) : 0;
+                        $minutes = isset($lessonData['minutes']) ? intval($lessonData['minutes']) : 0;
+                        $seconds = isset($lessonData['seconds']) ? intval($lessonData['seconds']) : 0;
+                        
+                        // Convert to decimal hours (e.g., 1h 30m = 1.50)
+                        $duration = $hours + ($minutes / 60) + ($seconds / 3600);
+                        
+                        // Create lesson content
+                        Content::create([
+                            'chapter_id' => $chapter->id,
+                            'content_type' => 'lesson',
+                            'title' => $lessonData['title'],
+                            'content_path' => $lessonData['video_url'] ?? null,
+                            'duration' => $duration,
+                            'order_number' => $lessonData['order'],
+                        ]);
+                    }
+                }
+                
+                // Process quizzes if they exist
+                if (isset($chapterData['quizzes']) && is_array($chapterData['quizzes'])) {
+                    foreach ($chapterData['quizzes'] as $quizData) {
+                        Content::create([
+                            'chapter_id' => $chapter->id,
+                            'quiz_id' => $quizData['quiz_id'],
+                            'content_type' => 'quiz',
+                            'title' => $quizData['title'],
+                            'order_number' => $quizData['order'],
+                        ]);
+                    }
+                }
+                
+                // Process resources if they exist
+                if (isset($chapterData['resources']) && is_array($chapterData['resources'])) {
+                    foreach ($chapterData['resources'] as $resourceData) {
+                        // Handle file upload
+                        $filePath = null;
+                        if (isset($resourceData['file']) && $resourceData['file']->isValid()) {
+                            $file = $resourceData['file'];
+                            $fileName = time() . '_' . $file->getClientOriginalName();
+                            $filePath = $file->storeAs('course_resources', $fileName, 'public');
+                        }
+                        
+                        // Create resource content
+                        Content::create([
+                            'chapter_id' => $chapter->id,
+                            'content_type' => 'resources',
+                            'title' => $resourceData['title'],
+                            'content_path' => $filePath,
+                            'order_number' => $resourceData['order'],
+                        ]);
+                    }
+                }
+            }
+            
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Course content saved successfully'], 200);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Failed to save course content: ' . $e->getMessage()], 500);
+        }
+    }
+    
+    /**
+     * Helper method to ensure unique order numbers
+     * 
+     * @param int $chapterId
+     * @param int $requestedOrder
+     * @return int
+     */
+    private function getUniqueOrderNumber($chapterId, $requestedOrder)
+    {
+        // Check if the order number already exists
+        $exists = Content::where('chapter_id', $chapterId)
+                         ->where('order_number', $requestedOrder)
+                         ->exists();
+        
+        if (!$exists) {
+            return $requestedOrder;
+        }
+        
+        // Find the next available order number
+        $maxOrder = Content::where('chapter_id', $chapterId)->max('order_number');
+        return $maxOrder + 1;
+    }
+
+
+
+
+
+
 
     public function edit($id)
     {

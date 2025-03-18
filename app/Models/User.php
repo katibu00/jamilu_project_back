@@ -20,17 +20,12 @@ class User extends Authenticatable
    
     protected $fillable = [
         'name',
-        'username',
         'phone',
         'email',
         'referral_code',
         'password'
     ];
 
-    public function profile()
-    {
-        return $this->hasOne(Profile::class);
-    }
 
     // Define the relationship with ReservedAccount model
     public function reservedAccounts()
@@ -71,6 +66,45 @@ class User extends Authenticatable
                     ->withPivot('progress') // Include the progress column from the pivot table
                     ->withTimestamps();
     }
+
+    public function instructor()
+    {
+        return $this->hasOne(Instructor::class);
+    }
+
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'referred_by');
+    }
+
+    
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referred_by');
+    }
+
+
+    public function isInstructor()
+    {
+        return $this->role === 'instructor';
+    }
+
+    /**
+     * Check if the user is a student.
+     */
+    public function isStudent()
+    {
+        return $this->role === 'student';
+    }
+
+    /**
+     * Check if the user is an admin.
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
 
 
     public function discussions()

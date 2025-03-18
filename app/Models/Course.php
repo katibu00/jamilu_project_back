@@ -4,12 +4,41 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Course extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = ['title', 'description', 'category_id', 'instructor_id', 'price'];
+    protected $fillable = [
+        'title',
+        'slug',
+        'instructor_id',
+        'short_description',
+        'description',
+        'level',
+        'language',
+        'featured',
+        'is_free',
+        'price',
+        'discount_price',
+        'has_discount',
+        'featured_video',
+        'thumbnail',
+        'tags',
+        'duration_minutes',
+        'published',
+    ];
+
+    protected $casts = [
+        'featured' => 'boolean',
+        'is_free' => 'boolean',
+        'has_discount' => 'boolean',
+        'published' => 'boolean',
+        'tags' => 'array',
+        'price' => 'decimal:2',
+        'discount_price' => 'decimal:2',
+    ];
 
     public function chapters()
     {

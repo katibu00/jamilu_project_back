@@ -1,4 +1,28 @@
 <header class="bg-white shadow-md sticky top-0 z-40">
+    <!-- Mobile-only top utility bar -->
+    <div class="bg-gray-50 border-b border-gray-200 block md:hidden">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-2 text-sm">
+                <!-- Login/Register links -->
+                <div class="flex items-center space-x-3">
+                    <a href="{{ route('login') }}" class="text-blue-900 hover:text-green-600 font-medium transition">Login</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="{{ route('register') }}" class="text-blue-900 hover:text-green-600 font-medium transition">Register</a>
+                </div>
+                
+                <!-- AI Career Advisor link for mobile -->
+                <a href="/ai-advisor" class="flex items-center bg-green-600 hover:bg-green-700 text-white font-medium px-3 py-1.5 rounded-md transition text-sm">
+                    <span>AI Advisor</span>
+                    <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main navigation bar -->
     <div class="container mx-auto px-4">
         <div class="flex justify-between items-center py-3">
             <!-- Logo -->
@@ -17,7 +41,7 @@
             </div>
 
             <!-- Desktop Navigation -->
-            <nav class="hidden md:flex space-x-8">
+            <nav class="hidden md:flex space-x-6">
                 <a href="/"
                     class="text-blue-900 font-medium hover:text-green-600 transition border-b-2 border-blue-900">Home</a>
                 <a href="/courses"
@@ -29,35 +53,65 @@
                 <a href="/for-institutions"
                     class="text-gray-700 font-medium hover:text-green-600 transition hover:border-b-2 hover:border-green-600">Institutions</a>
                 <a href="/about"
-                    class="text-gray-700 font-medium hover:text-green-600 transition hover:border-b-2 hover:border-green-600">About
-                    Us</a>
+                    class="text-gray-700 font-medium hover:text-green-600 transition hover:border-b-2 hover:border-green-600">About Us</a>
             </nav>
 
-            <!-- Right Section -->
-            <div class="flex items-center space-x-4">
-                <!-- Language Switch (visible on all screens) -->
-                <div
-                    class="language-toggle rounded-md overflow-hidden relative h-9 w-28 border border-gray-200 md:block mobile-language-toggle">
-                    <div class="toggle-slider"></div>
-                    <div class="flex h-full">
-                        <button class="w-1/2 z-10 text-sm font-medium text-white transition">English</button>
-                        <button class="w-1/2 z-10 text-sm font-medium text-gray-700 transition">Hausa</button>
+            <!-- Right Section - Desktop -->
+            <div class="hidden md:flex items-center space-x-4">
+                <!-- Language Dropdown -->
+                <div class="relative inline-block text-left">
+                    <button id="language-menu-button" class="flex items-center text-gray-700 hover:text-green-600 transition text-sm">
+                        <span>English</span>
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div id="language-dropdown" class="hidden absolute right-0 mt-2 w-24 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                        <div class="py-1" role="menu">
+                            <a href="#" class="block px-4 py-2 text-sm text-blue-900 hover:bg-gray-100" role="menuitem">English</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Hausa</a>
+                        </div>
                     </div>
                 </div>
-
-                <!-- CTA Button (visible on desktop) -->
+                
+                <!-- Login/Register Buttons (Desktop only) -->
+                <div class="flex items-center space-x-3">
+                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-green-600 font-medium transition text-sm">Login</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="{{ route('register') }}" class="text-gray-700 hover:text-green-600 font-medium transition text-sm">Register</a>
+                </div>
+                
+                <!-- AI Career Advisor Button -->
                 <a href="/ai-advisor"
-                    class="hidden md:flex items-center btn-primary text-white font-medium px-4 py-2 rounded-md transition">
+                    class="flex items-center bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md transition">
                     <span>AI Career Advisor</span>
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
                 </a>
+            </div>
+            
+            <!-- Right Section - Mobile -->
+            <div class="flex md:hidden items-center space-x-3">
+                <!-- Language Dropdown - Mobile -->
+                <div class="relative inline-block text-left">
+                    <button id="mobile-language-button" class="flex items-center text-gray-700 hover:text-green-600 transition text-sm">
+                        <span>EN</span>
+                        <svg class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div id="mobile-language-dropdown" class="hidden absolute right-0 mt-2 w-24 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                        <div class="py-1" role="menu">
+                            <a href="#" class="block px-4 py-2 text-sm text-blue-900 hover:bg-gray-100" role="menuitem">English</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Hausa</a>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Mobile Menu Button -->
-                <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none z-50">
+                <button id="mobile-menu-button" class="text-gray-700 focus:outline-none z-50">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path id="mobile-menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -76,16 +130,45 @@
             <a href="/for-government" class="py-3 text-xl text-gray-700 font-semibold">Government</a>
             <a href="/for-institutions" class="py-3 text-xl text-gray-700 font-semibold">Institutions</a>
             <a href="/about" class="py-3 text-xl text-gray-700 font-semibold">About Us</a>
-
-            <!-- CTA Button for Mobile -->
-            <a href="/ai-advisor"
-                class="mt-6 btn-primary text-white font-medium px-6 py-3 rounded-md flex items-center">
-                <span>AI Career Advisor</span>
-                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-            </a>
         </div>
     </div>
 </header>
+
+<!-- JavaScript for toggles -->
+<script>
+   
+    
+    // Desktop language dropdown toggle
+    const languageMenuButton = document.getElementById('language-menu-button');
+    const languageDropdown = document.getElementById('language-dropdown');
+    
+    if (languageMenuButton && languageDropdown) {
+        languageMenuButton.addEventListener('click', () => {
+            languageDropdown.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking elsewhere
+        document.addEventListener('click', (event) => {
+            if (!languageMenuButton.contains(event.target) && !languageDropdown.contains(event.target)) {
+                languageDropdown.classList.add('hidden');
+            }
+        });
+    }
+    
+    // Mobile language dropdown toggle
+    const mobileLangButton = document.getElementById('mobile-language-button');
+    const mobileLangDropdown = document.getElementById('mobile-language-dropdown');
+    
+    if (mobileLangButton && mobileLangDropdown) {
+        mobileLangButton.addEventListener('click', () => {
+            mobileLangDropdown.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking elsewhere
+        document.addEventListener('click', (event) => {
+            if (!mobileLangButton.contains(event.target) && !mobileLangDropdown.contains(event.target)) {
+                mobileLangDropdown.classList.add('hidden');
+            }
+        });
+    }
+</script>

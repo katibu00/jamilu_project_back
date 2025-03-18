@@ -1,128 +1,260 @@
-@extends('layouts.app')
+@extends('landing.layouts.app')
 
 @section('content')
-<div class="flex items-center justify-center my-20 bg-gray-100 px-4">
-    <div class="w-full max-w-md px-8 py-8 bg-white shadow-lg rounded-lg">
-        <h3 class="text-2xl font-bold text-center text-gray-800 mb-6">Create an Account</h3>
-        <form id="register-form" action="/register" method="POST">
-            @csrf
-            <div class="space-y-4">
-                <div class="flex items-center border-2 py-2 px-3 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <input class="pl-2 outline-none border-none flex-1" type="text" name="name" placeholder="Full Name" required />
-                </div>
-                <div class="flex items-center border-2 py-2 px-3 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    <input class="pl-2 outline-none border-none flex-1" type="email" name="email" placeholder="Email Address" required />
-                </div>
-                <div class="flex items-center border-2 py-2 px-3 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                    <input class="pl-2 outline-none border-none flex-1" type="tel" name="phone" placeholder="Phone Number" required />
-                </div>
-                <div class="flex items-center border-2 py-2 px-3 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                    </svg>
-                    <input class="pl-2 outline-none border-none flex-1" type="password" name="password" id="password" placeholder="Password" required />
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 cursor-pointer" id="togglePassword" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="flex items-center justify-center">
-                    <button type="submit" class="w-full px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-300">
-                        Register
+<div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center bg-gray-50">
+    <div class="max-w-md w-full" data-aos="fade-up" data-aos-duration="1000">
+        <!-- Registration Card -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden custom-shadow card-hover">
+            <!-- Card Header -->
+            <div class="hero-gradient px-6 py-8 text-center">
+                <h2 class="text-2xl font-bold text-white">Create Your Account</h2>
+                <p class="mt-2 text-gray-200">Join Koyify and launch your tech career journey</p>
+            </div>
+            
+            <!-- Registration Form -->
+            <div class="px-6 py-8">
+                {{-- @include('landing.layouts.alerts') --}}
+                
+                <form id="registerForm" class="mt-4 space-y-6">
+                    <div class="field-group">
+                        <label for="fullname" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                        <div class="relative">
+                            <i class="fas fa-user input-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="fullname" name="fullname" class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:border-transparent transition duration-200" placeholder="Enter your full name">
+                        </div>
+                        <p class="text-xs text-red-500 mt-1 hidden" id="fullnameError"></p>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope input-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="email" id="email" name="email" class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:border-transparent transition duration-200" placeholder="Enter your email address">
+                        </div>
+                        <p class="text-xs text-red-500 mt-1 hidden" id="emailError"></p>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <div class="relative">
+                            <i class="fas fa-phone input-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="tel" id="phone" name="phone" class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:border-transparent transition duration-200" placeholder="Enter your phone number">
+                        </div>
+                        <p class="text-xs text-red-500 mt-1 hidden" id="phoneError"></p>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <div class="relative">
+                            <i class="fas fa-lock input-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="password" id="password" name="password" class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:border-transparent transition duration-200" placeholder="Create a strong password">
+                            <i class="fas fa-eye password-toggle absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer" id="passwordToggle"></i>
+                        </div>
+                        <p class="text-xs text-red-500 mt-1 hidden" id="passwordError"></p>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                        <div class="relative">
+                            <i class="fas fa-lock input-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="password" id="confirm-password" name="password_confirmation" class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:border-transparent transition duration-200" placeholder="Confirm your password">
+                            <i class="fas fa-eye password-toggle absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer" id="confirmPasswordToggle"></i>
+                        </div>
+                        <p class="text-xs text-red-500 mt-1 hidden" id="confirmPasswordError"></p>
+                    </div>
+                    
+                    <!-- Referral Code (Optional) -->
+                    <div class="field-group">
+                        <label for="referral-code" class="block text-sm font-medium text-gray-700 mb-2">Referral Code (Optional)</label>
+                        <div class="relative">
+                            <i class="fas fa-gift input-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="referral-code" name="referral_code" class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:border-transparent transition duration-200" placeholder="Enter referral code if you have one">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="flex items-center text-sm text-gray-700">
+                            <input type="checkbox" name="terms" id="terms" class="rounded text-blue-600 focus:ring-blue-500 h-4 w-4">
+                            <span class="ml-2">I agree to the <a href="#" class="text-blue-600 hover:text-blue-800">Terms of Service</a> and <a href="#" class="text-blue-600 hover:text-blue-800">Privacy Policy</a></span>
+                        </label>
+                        <p class="text-xs text-red-500 mt-1 hidden" id="termsError"></p>
+                    </div>
+                    
+                    <button type="submit" id="submitBtn" class="btn-primary w-full py-3 rounded-lg text-white font-medium flex items-center justify-center shadow-lg">
+                        <span>Create Account</span>
+                        <span id="loadingSpinner" class="ml-2 hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
                     </button>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600">Already have an account? <a href="{{ route('login') }}" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200">Sign In</a></p>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-gray-200 flex flex-col items-center">
+                    <p class="text-sm text-gray-500 mb-4">Or sign up with</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-all">
+                            <i class="fab fa-google text-gray-700"></i>
+                        </a>
+                        <a href="#" class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-all">
+                            <i class="fab fa-facebook-f text-gray-700"></i>
+                        </a>
+                        <a href="#" class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-all">
+                            <i class="fab fa-linkedin-in text-gray-700"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </form>
-        <div class="mt-6 text-center">
-            <p class="text-sm text-gray-600">Already have an account? <a href="/login" class="text-indigo-600 hover:text-indigo-800">Login here</a></p>
+        </div>
+        
+        <div class="text-center mt-6">
+            <p class="text-xs text-gray-500">Protected by reCAPTCHA and subject to our Privacy Policy and Terms of Service</p>
         </div>
     </div>
 </div>
-@endsection
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 
-@section('js')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    $('#register-form').submit(function(event) {
-        event.preventDefault();
-        var submitButton = $(this).find('button[type="submit"]');
-        submitButton.prop('disabled', true).html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...'
-        );
-        var formData = new FormData(this);
+    // Password visibility toggle functionality
+    $('#passwordToggle').on('click', function() {
+        const passwordInput = $('#password');
+        const icon = $(this);
+        
+        if (passwordInput.attr('type') === 'password') {
+            passwordInput.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordInput.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+    
+    // Confirm password visibility toggle
+    $('#confirmPasswordToggle').on('click', function() {
+        const confirmPasswordInput = $('#confirm-password');
+        const icon = $(this);
+        
+        if (confirmPasswordInput.attr('type') === 'password') {
+            confirmPasswordInput.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            confirmPasswordInput.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+    
+    // Register form submission
+    $('#registerForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Reset error messages
+        $('.text-red-500').addClass('hidden');
+        
+        // Show loading spinner
+        $('#submitBtn span:first-child').text('Processing...');
+        $('#loadingSpinner').removeClass('hidden');
+        $('#submitBtn').prop('disabled', true);
+        
+        // Get form data
+        const formData = {
+            name: $('#fullname').val(),
+            username: $('#username').val(),
+            email: $('#email').val(),
+            phone: $('#phone').val(),
+            password: $('#password').val(),
+            password_confirmation: $('#confirm-password').val(),
+            referral_code: $('#referral-code').val(),
+            terms: $('#terms').is(':checked') ? 1 : 0
+        };
+        
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        
+        // Send AJAX request
         $.ajax({
-            url: '/register',
             type: 'POST',
+            url: '/register',
             data: formData,
-            processData: false,
-            contentType: false,
             success: function(response) {
-                    submitButton.prop('disabled', false).text('Register');
-
-                    if (response.message) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.message
-                        }).then(() => {
-                            window.location.href = '/login';
-                        });
+                // Show success message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registration Successful!',
+                    text: response.message || 'Your account has been created successfully.',
+                    confirmButtonColor: '#3B82F6'
+                }).then((result) => {
+                    // Redirect to login or dashboard
+                    window.location.href = response.redirect || '/login';
+                });
+            },
+            error: function(xhr) {
+                // Reset button state
+                $('#submitBtn span:first-child').text('Create Account');
+                $('#loadingSpinner').addClass('hidden');
+                $('#submitBtn').prop('disabled', false);
+                
+                if (xhr.status === 422) {
+                    // Validation errors
+                    const errors = xhr.responseJSON.errors;
+                    
+                    // Display error messages for each field
+                    if (errors.name) {
+                        $('#fullnameError').text(errors.name[0]).removeClass('hidden');
                     }
-                },
-                error: function(xhr, status, error) {
-                    submitButton.prop('disabled', false).text('Register');
-
-                    var response = xhr.responseJSON;
-                    if (response && response.errors) {
-                        var errorMessage = '';
-                        $.each(response.errors, function(field, messages) {
-                            errorMessage += messages[0] + '\n';
-                        });
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Validation Error',
-                            text: errorMessage
-                        });
-                    } else if (response && response.error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.error
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'An error occurred. Please try again.'
-                        });
+                    
+                    if (errors.username) {
+                        $('#usernameError').text(errors.username[0]).removeClass('hidden');
                     }
+                    
+                    if (errors.email) {
+                        $('#emailError').text(errors.email[0]).removeClass('hidden');
+                    }
+                    
+                    if (errors.phone) {
+                        $('#phoneError').text(errors.phone[0]).removeClass('hidden');
+                    }
+                    
+                    if (errors.password) {
+                        $('#passwordError').text(errors.password[0]).removeClass('hidden');
+                    }
+                    
+                    if (errors.terms) {
+                        $('#termsError').text('You must agree to the Terms of Service and Privacy Policy').removeClass('hidden');
+                    }
+                    
+                    // Show alert for general errors
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: 'Please check the form for errors.',
+                        confirmButtonColor: '#3B82F6'
+                    });
+                } else {
+                    // Server or other errors
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Registration Failed',
+                        text: xhr.responseJSON.message || 'Something went wrong. Please try again later.',
+                        confirmButtonColor: '#3B82F6'
+                    });
                 }
+            }
         });
     });
-
-    // Password visibility toggle
-    $('#togglePassword').click(function() {
-        const password = $('#password');
-        const type = password.attr('type') === 'password' ? 'text' : 'password';
-        password.attr('type', type);
-        
-        // Change icon based on password visibility
-        if (type === 'text') {
-            $(this).html('<path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 00-2.79.588l.77.771A5.944 5.944 0 018 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0114.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/><path d="M11.297 9.176a3.5 3.5 0 00-4.474-4.474l.823.823a2.5 2.5 0 012.829 2.829l.822.822zm-2.943 1.299l.822.822a3.5 3.5 0 01-4.474-4.474l.823.823a2.5 2.5 0 002.829 2.829z"/><path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 001.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 018 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709z"/><path fill-rule="evenodd" d="M13.646 14.354l-12-12 .708-.708 12 12-.708.708z" clip-rule="evenodd"/>');
-        } else {
-            $(this).html('<path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />');
-        }
+    
+    // Login functionality for the "Sign In" link
+    $('a:contains("Sign In")').on('click', function(e) {
+        e.preventDefault();
+        window.location.href = $(this).attr('href') || '/login';
     });
 });
 </script>
+@endpush
 @endsection
