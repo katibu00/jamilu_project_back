@@ -180,7 +180,7 @@
                             </p>
                         </div>
 
-                        <a href="/courses/web-development"
+                        <a href="{{ route('careers.web-development') }}"
                             class="btn-primary text-white font-bold px-6 py-3 rounded-lg transition flex items-center justify-center">
                             <span>Explore Web Development Path</span>
                             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"

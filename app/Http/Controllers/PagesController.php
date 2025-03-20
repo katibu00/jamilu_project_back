@@ -42,43 +42,56 @@ class PagesController extends Controller
     }
 
 
+    public function careers()
+    {
+        // Logic for the main careers listing page
+        return view('landing.pages.careers');
+    }
+
+    public function webDevelopment()
+    {
+        // Logic for the web development career page
+        return view('landing.pages.web-development');
+    }
+
+
 
 
 
     public function courseDetail($slug)
-{
-    // Fetch the course with eager loading for related data
-    $course = Course::with([
-        'instructor', // Changed from 'instructor.user'
-        'chapters' => function($query) {
-            $query->orderBy('order_number');
-        },
-        'chapters.contents' => function($query) {
-            $query->orderBy('order_number');
+    {
+        // Fetch the course with eager loading for related data
+        $course = Course::with([
+            'instructor', // Changed from 'instructor.user'
+            'chapters' => function($query) {
+                $query->orderBy('order_number');
+            },
+            'chapters.contents' => function($query) {
+                $query->orderBy('order_number');
+            }
+        ])->where('slug', $slug)->firstOrFail();
+        
+        // Get related courses (you can modify this logic based on your requirements)
+        $relatedCourses = Course::where('id', '!=', $course->id)
+                                ->where(function($query) use ($course) {
+                                    $query->where('level', $course->level)
+                                        ->orWhere('language', $course->language);
+                                })
+                                ->where('published', true)
+                                ->limit(3)
+                                ->get();
+        
+        // Calculate some statistics
+        $totalLessons = 0;
+        $totalDuration = 0;
+        
+        foreach ($course->chapters as $chapter) {
+            $totalLessons += $chapter->contents->count();
+            $totalDuration += $chapter->contents->sum('duration');
         }
-    ])->where('slug', $slug)->firstOrFail();
-    
-    // Get related courses (you can modify this logic based on your requirements)
-    $relatedCourses = Course::where('id', '!=', $course->id)
-                            ->where(function($query) use ($course) {
-                                $query->where('level', $course->level)
-                                      ->orWhere('language', $course->language);
-                            })
-                            ->where('published', true)
-                            ->limit(3)
-                            ->get();
-    
-    // Calculate some statistics
-    $totalLessons = 0;
-    $totalDuration = 0;
-    
-    foreach ($course->chapters as $chapter) {
-        $totalLessons += $chapter->contents->count();
-        $totalDuration += $chapter->contents->sum('duration');
+        
+        return view('guest.course_detail', compact('course', 'relatedCourses', 'totalLessons', 'totalDuration'));
     }
-    
-    return view('guest.course_detail', compact('course', 'relatedCourses', 'totalLessons', 'totalDuration'));
-}
     
 
     public function buy($slug)

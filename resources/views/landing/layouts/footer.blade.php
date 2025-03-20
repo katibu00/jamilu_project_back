@@ -53,6 +53,7 @@
                     <li><a href="/for-institutions" class="text-blue-200 hover:text-white transition">Institutions</a></li>
                     <li><a href="/scholarships" class="text-blue-200 hover:text-white transition">Scholarships</a></li>
                     <li><a href="/partner" class="text-blue-200 hover:text-white transition">Become a Partner</a></li>
+                    <li><a href="{{ route('careers.index') }}" class="text-blue-200 hover:text-white transition">Careers</a></li>
                 </ul>
             </div>
             

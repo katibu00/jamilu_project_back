@@ -88,6 +88,19 @@ Route::get('/home', function () {
 });
 
 
+
+// routes/web.php
+
+// Main careers listing page
+Route::get('/careers', [PagesController::class, 'careers'])->name('careers.index');
+
+// Web development career page
+Route::get('/careers/web-development', [PagesController::class, 'webDevelopment'])->name('careers.web-development');
+
+
+
+
+
 // Instructor Profile Completion Route
 Route::get('/instructor/profile/complete', function () {
     return view('instructor.profile.complete');
