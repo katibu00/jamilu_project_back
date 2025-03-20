@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,26 +10,29 @@
     <style>
         /* Custom styles for improved mobile experience */
         body {
-            padding-bottom: 80px; /* Add space for the fixed bottom CTA */
+            padding-bottom: 80px;
+            /* Add space for the fixed bottom CTA */
         }
+
         .course-content {
             max-height: 100%;
             overflow-y: auto;
         }
-        
+
         /* Fix for mobile scrolling */
         .tab-content {
             display: none;
         }
+
         .tab-content.active {
             display: block;
         }
-        
+
         /* Smooth scrolling */
         html {
             scroll-behavior: smooth;
         }
-        
+
         /* Improved touch targets for mobile */
         .mobile-tap-target {
             min-height: 44px;
@@ -37,17 +41,18 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         /* Collapsible sections */
         .chapter-content {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease-out;
         }
+
         .chapter-content.open {
             max-height: 500px;
         }
-        
+
         /* Improved readability on mobile */
         @media (max-width: 640px) {
             .text-sm {
@@ -56,6 +61,7 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-50 text-gray-800 pb-24">
     <!-- Navigation -->
     <nav class="bg-indigo-600 text-white p-4 flex justify-between items-center sticky top-0 z-30 shadow-md">
@@ -81,7 +87,8 @@
         <div class="relative">
             <img src="/image.jpg" alt="Python Programming Course" class="w-full h-56 object-cover sm:h-64">
             <div class="absolute inset-0 flex items-center justify-center">
-                <button class="bg-white bg-opacity-80 rounded-full p-4 shadow-lg mobile-tap-target" onclick="playVideo()">
+                <button class="bg-white bg-opacity-80 rounded-full p-4 shadow-lg mobile-tap-target"
+                    onclick="playVideo()">
                     <i class="fas fa-play text-indigo-600 text-xl"></i>
                 </button>
             </div>
@@ -89,7 +96,7 @@
                 1:45 / 12:30
             </div>
         </div>
-        
+
         <!-- Course Title Section -->
         <div class="p-4 bg-white border-b">
             <h1 class="text-xl font-bold">Python Programming for Beginners</h1>
@@ -115,7 +122,8 @@
     <!-- Course Info Tabs -->
     <div class="bg-white mb-2 sticky top-[72px] z-20 shadow-sm">
         <div class="flex border-b">
-            <button class="flex-1 py-3 font-medium text-indigo-600 border-b-2 border-indigo-600 tab-button active" data-tab="about">
+            <button class="flex-1 py-3 font-medium text-indigo-600 border-b-2 border-indigo-600 tab-button active"
+                data-tab="about">
                 About
             </button>
             <button class="flex-1 py-3 font-medium text-gray-500 tab-button" data-tab="chapters">
@@ -135,15 +143,22 @@
             <div class="mb-6">
                 <h2 class="text-lg font-semibold mb-2">Course Description</h2>
                 <p class="text-gray-700 text-sm">
-                    Learn Python programming from scratch in your native language. This comprehensive course covers everything from basic syntax to advanced concepts like object-oriented programming, making it perfect for beginners with no prior coding experience.
+                    Learn Python programming from scratch in your native language. This comprehensive course covers
+                    everything from basic syntax to advanced concepts like object-oriented programming, making it
+                    perfect for beginners with no prior coding experience.
                 </p>
                 <p class="text-gray-700 text-sm mt-2 collapse-text" id="more-description" style="display: none;">
-                    All lessons are explained in simple terms with practical examples that relate to everyday Nigerian contexts, making learning relevant and easy to understand. You'll start with the fundamentals and gradually progress to more complex topics, building real-world applications along the way.
+                    All lessons are explained in simple terms with practical examples that relate to everyday Nigerian
+                    contexts, making learning relevant and easy to understand. You'll start with the fundamentals and
+                    gradually progress to more complex topics, building real-world applications along the way.
                 </p>
                 <p class="text-gray-700 text-sm mt-2 collapse-text" id="even-more-description" style="display: none;">
-                    Each lesson includes coding exercises and projects specifically designed to reinforce your learning and help you apply your skills to solve real problems. By the end of this course, you'll have a solid foundation in Python programming and be able to develop your own applications.
+                    Each lesson includes coding exercises and projects specifically designed to reinforce your learning
+                    and help you apply your skills to solve real problems. By the end of this course, you'll have a
+                    solid foundation in Python programming and be able to develop your own applications.
                 </p>
-                <button class="text-indigo-600 text-sm mt-2 font-medium" id="read-more-btn" onclick="toggleDescription()">Read more</button>
+                <button class="text-indigo-600 text-sm mt-2 font-medium" id="read-more-btn"
+                    onclick="toggleDescription()">Read more</button>
             </div>
 
             <!-- What You'll Learn -->
@@ -156,7 +171,8 @@
                     </div>
                     <div class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                        <p class="text-sm text-gray-700">Understand core programming concepts in your native language</p>
+                        <p class="text-sm text-gray-700">Understand core programming concepts in your native language
+                        </p>
                     </div>
                     <div class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
@@ -168,7 +184,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Instructor Info -->
             <div class="mb-6 bg-white rounded-lg p-4 shadow-sm">
                 <h2 class="text-lg font-semibold mb-3">Your Instructor</h2>
@@ -180,9 +196,11 @@
                     </div>
                 </div>
                 <div class="mt-3 text-sm text-gray-700">
-                    <p>10+ years of software development experience with a passion for teaching tech skills in native Nigerian languages.</p>
+                    <p>10+ years of software development experience with a passion for teaching tech skills in native
+                        Nigerian languages.</p>
                 </div>
-                <button class="text-indigo-600 text-sm mt-2 font-medium" onclick="viewInstructorProfile()">View profile</button>
+                <button class="text-indigo-600 text-sm mt-2 font-medium" onclick="viewInstructorProfile()">View
+                    profile</button>
             </div>
 
             <!-- Related Courses -->
@@ -192,7 +210,8 @@
                     <!-- Course Card 1 -->
                     <div class="bg-white rounded-lg shadow-sm">
                         <a href="#" class="block">
-                            <img src="/api/placeholder/256/150" alt="Web Development Course" class="w-full h-32 object-cover rounded-t-lg">
+                            <img src="/api/placeholder/256/150" alt="Web Development Course"
+                                class="w-full h-32 object-cover rounded-t-lg">
                             <div class="p-3">
                                 <h3 class="font-medium mb-1">Web Development Basics</h3>
                                 <div class="flex items-center text-sm mb-2">
@@ -212,11 +231,12 @@
                             </div>
                         </a>
                     </div>
-                    
+
                     <!-- Course Card 2 -->
                     <div class="bg-white rounded-lg shadow-sm">
                         <a href="#" class="block">
-                            <img src="/api/placeholder/256/150" alt="Data Analysis Course" class="w-full h-32 object-cover rounded-t-lg">
+                            <img src="/api/placeholder/256/150" alt="Data Analysis Course"
+                                class="w-full h-32 object-cover rounded-t-lg">
                             <div class="p-3">
                                 <h3 class="font-medium mb-1">Data Analysis with Python</h3>
                                 <div class="flex items-center text-sm mb-2">
@@ -236,11 +256,12 @@
                             </div>
                         </a>
                     </div>
-                    
+
                     <!-- Course Card 3 -->
                     <div class="bg-white rounded-lg shadow-sm">
                         <a href="#" class="block">
-                            <img src="/api/placeholder/256/150" alt="Mobile App Development" class="w-full h-32 object-cover rounded-t-lg">
+                            <img src="/api/placeholder/256/150" alt="Mobile App Development"
+                                class="w-full h-32 object-cover rounded-t-lg">
                             <div class="p-3">
                                 <h3 class="font-medium mb-1">Mobile App Development</h3>
                                 <div class="flex items-center text-sm mb-2">
@@ -270,7 +291,7 @@
                 <h2 class="text-lg font-semibold">Course Content</h2>
                 <span class="text-sm text-gray-600">12 chapters • 36 lessons</span>
             </div>
-            
+
             <!-- Chapter List -->
             <div class="space-y-4">
                 <!-- Chapter 1 - Expanded -->
@@ -299,7 +320,8 @@
                             </div>
                             <span class="text-xs text-gray-500">15:30</span>
                         </div>
-                        <div class="flex justify-between items-center cursor-pointer" onclick="playLesson('first-program')">
+                        <div class="flex justify-between items-center cursor-pointer"
+                            onclick="playLesson('first-program')">
                             <div class="flex items-center">
                                 <i class="fas fa-check-circle text-green-500 mr-2"></i>
                                 <span class="text-sm">Your First Python Program</span>
@@ -308,7 +330,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Chapter 2 - Collapsed -->
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                     <div class="p-3 border-b cursor-pointer chapter-header" data-chapter="2">
@@ -321,7 +343,8 @@
                         <p class="text-xs text-gray-600 mt-1">4 lessons • 60 min</p>
                     </div>
                     <div class="p-3 space-y-3 bg-gray-50 chapter-content" id="chapter-content-2">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="playLesson('variables')">
+                        <div class="flex justify-between items-center cursor-pointer"
+                            onclick="playLesson('variables')">
                             <div class="flex items-center">
                                 <i class="fas fa-play-circle text-indigo-600 mr-2"></i>
                                 <span class="text-sm">Understanding Variables</span>
@@ -351,14 +374,15 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Chapter 3 - Locked -->
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                     <div class="p-3 border-b cursor-pointer" onclick="showUpgradePrompt()">
                         <div class="flex justify-between items-center">
                             <div class="flex items-center">
                                 <h3 class="font-medium">3. Control Flow & Logic</h3>
-                                <span class="ml-2 bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">Locked</span>
+                                <span
+                                    class="ml-2 bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">Locked</span>
                             </div>
                             <button class="text-gray-500">
                                 <i class="fas fa-lock"></i>
@@ -367,14 +391,15 @@
                         <p class="text-xs text-gray-600 mt-1">5 lessons • 75 min</p>
                     </div>
                 </div>
-                
+
                 <!-- Chapter 4 - Locked -->
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                     <div class="p-3 border-b cursor-pointer" onclick="showUpgradePrompt()">
                         <div class="flex justify-between items-center">
                             <div class="flex items-center">
                                 <h3 class="font-medium">4. Functions & Modules</h3>
-                                <span class="ml-2 bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">Locked</span>
+                                <span
+                                    class="ml-2 bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">Locked</span>
                             </div>
                             <button class="text-gray-500">
                                 <i class="fas fa-lock"></i>
@@ -383,14 +408,15 @@
                         <p class="text-xs text-gray-600 mt-1">6 lessons • 90 min</p>
                     </div>
                 </div>
-                
+
                 <!-- Chapter 5 - Locked -->
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                     <div class="p-3 border-b cursor-pointer" onclick="showUpgradePrompt()">
                         <div class="flex justify-between items-center">
                             <div class="flex items-center">
                                 <h3 class="font-medium">5. Object-Oriented Programming</h3>
-                                <span class="ml-2 bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">Locked</span>
+                                <span
+                                    class="ml-2 bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">Locked</span>
                             </div>
                             <button class="text-gray-500">
                                 <i class="fas fa-lock"></i>
@@ -400,19 +426,21 @@
                     </div>
                 </div>
             </div>
-            
-            <button class="w-full mt-4 py-3 border border-indigo-600 text-indigo-600 rounded-md text-center font-medium" onclick="showAllChapters()">
+
+            <button
+                class="w-full mt-4 py-3 border border-indigo-600 text-indigo-600 rounded-md text-center font-medium"
+                onclick="showAllChapters()">
                 Show all chapters
             </button>
         </div>
-        
+
         <!-- Reviews Tab Content -->
         <div class="p-4 tab-content" id="reviews-content">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-lg font-semibold">Student Reviews</h2>
                 <button class="text-indigo-600 text-sm font-medium" onclick="showAllReviews()">View all</button>
             </div>
-            
+
             <div class="bg-white rounded-lg shadow-sm p-4">
                 <!-- Review Summary -->
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
@@ -466,13 +494,14 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Individual Reviews -->
                 <div class="border-t pt-4 space-y-4">
                     <div>
                         <div class="flex justify-between">
                             <div class="flex items-center">
-                                <img src="/api/placeholder/40/40" alt="Reviewer" class="w-10 h-10 rounded-full object-cover">
+                                <img src="/api/placeholder/40/40" alt="Reviewer"
+                                    class="w-10 h-10 rounded-full object-cover">
                                 <div class="ml-2">
                                     <p class="font-medium text-sm">Chinedu Okonkwo</p>
                                     <div class="flex text-yellow-400 text-xs">
@@ -487,7 +516,9 @@
                             <span class="text-xs text-gray-500">2 weeks ago</span>
                         </div>
                         <p class="text-sm mt-2">
-                            Learning Python in Igbo language made it so much easier for me to understand programming concepts. The examples were practical and related to Nigerian businesses which made it very relevant.
+                            Learning Python in Igbo language made it so much easier for me to understand programming
+                            concepts. The examples were practical and related to Nigerian businesses which made it very
+                            relevant.
                         </p>
                         <div class="mt-2 flex items-center">
                             <button class="text-gray-500 text-xs flex items-center mr-4" onclick="likeReview(this)">
@@ -498,11 +529,12 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <div class="border-t pt-4">
                         <div class="flex justify-between">
                             <div class="flex items-center">
-                                <img src="/api/placeholder/40/40" alt="Reviewer" class="w-10 h-10 rounded-full object-cover">
+                                <img src="/api/placeholder/40/40" alt="Reviewer"
+                                    class="w-10 h-10 rounded-full object-cover">
                                 <div class="ml-2">
                                     <p class="font-medium text-sm">Amina Yusuf</p>
                                     <div class="flex text-yellow-400 text-xs">
@@ -517,7 +549,8 @@
                             <span class="text-xs text-gray-500">1 month ago</span>
                         </div>
                         <p class="text-sm mt-2">
-                            The Hausa translation really helped me grasp the fundamentals. Instructor explains things very clearly. The only issue was some technical problems with video playback occasionally.
+                            The Hausa translation really helped me grasp the fundamentals. Instructor explains things
+                            very clearly. The only issue was some technical problems with video playback occasionally.
                         </p>
                         <div class="mt-2 flex items-center">
                             <button class="text-gray-500 text-xs flex items-center mr-4" onclick="likeReview(this)">
@@ -528,11 +561,12 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <div class="border-t pt-4">
                         <div class="flex justify-between">
                             <div class="flex items-center">
-                                <img src="/api/placeholder/40/40" alt="Reviewer" class="w-10 h-10 rounded-full object-cover">
+                                <img src="/api/placeholder/40/40" alt="Reviewer"
+                                    class="w-10 h-10 rounded-full object-cover">
                                 <div class="ml-2">
                                     <p class="font-medium text-sm">Olumide Johnson</p>
                                     <div class="flex text-yellow-400 text-xs">
@@ -547,7 +581,9 @@
                             <span class="text-xs text-gray-500">2 months ago</span>
                         </div>
                         <p class="text-sm mt-2">
-                            This course is amazing! The Yoruba explanations really helped me understand complex concepts. I've tried other courses before but this is the first one where I feel I'm truly learning. The projects are practical and relevant to my work.
+                            This course is amazing! The Yoruba explanations really helped me understand complex
+                            concepts. I've tried other courses before but this is the first one where I feel I'm truly
+                            learning. The projects are practical and relevant to my work.
                         </p>
                         <div class="mt-2 flex items-center">
                             <button class="text-gray-500 text-xs flex items-center mr-4" onclick="likeReview(this)">
@@ -559,14 +595,16 @@
                         </div>
                     </div>
                 </div>
-                
-                <button class="w-full mt-4 py-2 border border-indigo-600 text-indigo-600 rounded-md text-center font-medium" onclick="showAllReviews()">
+
+                <button
+                    class="w-full mt-4 py-2 border border-indigo-600 text-indigo-600 rounded-md text-center font-medium"
+                    onclick="showAllReviews()">
                     Load more reviews
                 </button>
             </div>
         </div>
     </div>
-    
+
     <!-- Sticky Bottom CTA -->
     <div class="fixed bottom-0 left-0 w-full bg-white border-t p-4 flex items-center justify-between z-30">
         <div>
@@ -580,19 +618,21 @@
 
     <!-- Video Modal -->
     <!-- Updated Video Modal with better positioning and z-index -->
-<div id="videoModal" class="fixed inset-0 bg-black bg-opacity-90 z-[9999] hidden flex items-center justify-center">
-    <div class="w-full h-full max-w-4xl max-h-[80vh] mx-auto my-auto relative">
-        <div class="flex justify-end absolute top-4 right-4 z-[10000]">
-            <button onclick="closeVideoModal()" class="text-white p-3 bg-black bg-opacity-60 hover:bg-opacity-80 rounded-full">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-        </div>
-        <div class="w-full h-full flex items-center justify-center">
-            <!-- Bunny.net player iframe will be inserted here -->
-            <div id="bunnyPlayerContainer" class="w-full h-full"></div>
+    <div id="videoModal"
+        class="fixed inset-0 bg-black bg-opacity-90 z-[9999] hidden flex items-center justify-center">
+        <div class="w-full h-full max-w-4xl max-h-[80vh] mx-auto my-auto relative">
+            <div class="flex justify-end absolute top-4 right-4 z-[10000]">
+                <button onclick="closeVideoModal()"
+                    class="text-white p-3 bg-black bg-opacity-60 hover:bg-opacity-80 rounded-full">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="w-full h-full flex items-center justify-center">
+                <!-- Bunny.net player iframe will be inserted here -->
+                <div id="bunnyPlayerContainer" class="w-full h-full"></div>
+            </div>
         </div>
     </div>
-</div>
 
     <!-- Upgrade Modal -->
     <div id="upgradeModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden flex items-center justify-center">
@@ -618,11 +658,11 @@
         // Tab switching functionality
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
-        
+
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const tabName = button.getAttribute('data-tab');
-                
+
                 // Update active tab button
                 tabButtons.forEach(btn => {
                     btn.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-600');
@@ -630,7 +670,7 @@
                 });
                 button.classList.remove('text-gray-500');
                 button.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
-                
+
                 // Show active tab content
                 tabContents.forEach(content => {
                     content.classList.remove('active');
@@ -638,18 +678,18 @@
                 document.getElementById(`${tabName}-content`).classList.add('active');
             });
         });
-        
+
         // Chapter toggling
         const chapterHeaders = document.querySelectorAll('.chapter-header');
         const chapterToggles = document.querySelectorAll('.chapter-toggle');
-        
+
         chapterHeaders.forEach(header => {
             header.addEventListener('click', () => {
                 const chapterNum = header.getAttribute('data-chapter');
                 toggleChapter(chapterNum);
             });
         });
-        
+
         chapterToggles.forEach(toggle => {
             toggle.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -657,11 +697,11 @@
                 toggleChapter(chapterNum);
             });
         });
-        
+
         function toggleChapter(chapterNum) {
             const content = document.getElementById(`chapter-content-${chapterNum}`);
             const icon = document.getElementById(`chapter-icon-${chapterNum}`);
-            
+
             if (content.classList.contains('open')) {
                 content.classList.remove('open');
                 icon.classList.remove('fa-chevron-up');
@@ -672,13 +712,13 @@
                 icon.classList.add('fa-chevron-up');
             }
         }
-        
+
         // Read more toggle
         function toggleDescription() {
             const moreText = document.getElementById('more-description');
             const evenMoreText = document.getElementById('even-more-description');
             const readMoreBtn = document.getElementById('read-more-btn');
-            
+
             if (moreText.style.display === 'none') {
                 moreText.style.display = 'block';
                 readMoreBtn.textContent = 'Read more';
@@ -691,73 +731,73 @@
                 readMoreBtn.textContent = 'Read more';
             }
         }
-        
+
         // Video modal
         // Updated functions for better modal handling
-function playVideo() {
-    // First create the iframe
-    const container = document.getElementById('bunnyPlayerContainer');
-    container.innerHTML = '';
-    
-    const iframe = document.createElement('iframe');
-    iframe.src = "https://iframe.mediadelivery.net/play/396430/eace5ce5-e909-4b1a-86df-e52f82ddd756";
-    iframe.style.width = "100%";
-    iframe.style.height = "100%";
-    iframe.style.border = "none";
-    iframe.style.borderRadius = "4px";
-    iframe.allow = "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;";
-    iframe.allowFullscreen = true;
-    
-    container.appendChild(iframe);
-    
-    // Then show the modal
-    const modal = document.getElementById('videoModal');
-    modal.style.display = "flex";
-    document.body.style.overflow = 'hidden';
-}
+        function playVideo() {
+            // First create the iframe
+            const container = document.getElementById('bunnyPlayerContainer');
+            container.innerHTML = '';
 
-function closeVideoModal() {
-    const modal = document.getElementById('videoModal');
-    modal.style.display = "none";
-    document.body.style.overflow = 'auto';
-    
-    // Clear the iframe when closing to stop playback
-    document.getElementById('bunnyPlayerContainer').innerHTML = '';
-}
-        
+            const iframe = document.createElement('iframe');
+            iframe.src = "https://iframe.mediadelivery.net/play/396430/eace5ce5-e909-4b1a-86df-e52f82ddd756";
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.style.borderRadius = "4px";
+            iframe.allow = "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;";
+            iframe.allowFullscreen = true;
+
+            container.appendChild(iframe);
+
+            // Then show the modal
+            const modal = document.getElementById('videoModal');
+            modal.style.display = "flex";
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('videoModal');
+            modal.style.display = "none";
+            document.body.style.overflow = 'auto';
+
+            // Clear the iframe when closing to stop playback
+            document.getElementById('bunnyPlayerContainer').innerHTML = '';
+        }
+
         // Upgrade modal
         function showUpgradePrompt() {
             document.getElementById('upgradeModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
-        
+
         function closeUpgradeModal() {
             document.getElementById('upgradeModal').classList.add('hidden');
             document.body.style.overflow = 'auto';
         }
-        
+
         // Lesson playing
         function playLesson(lessonId) {
             console.log(`Playing lesson: ${lessonId}`);
             playVideo();
         }
-        
+
         // Enroll now button
         function enrollNow() {
             alert('Enrolling you in the course!');
             closeUpgradeModal();
         }
-        
+
         // Show all chapters button
         function showAllChapters() {
             alert('Showing all chapters!');
         }
-        
+
         // Show all reviews
         function showAllReviews() {
             alert('Showing all reviews!');
         }
-        
+
         // Like review
         function likeReview(button) {
             const text = button.textContent;
@@ -765,15 +805,15 @@ function closeVideoModal() {
             const newCount = currentCount + 1;
             button.innerHTML = `<i class="fas fa-thumbs-up mr-1"></i> Helpful (${newCount})`;
         }
-        
+
         // Show reply form
         function showReplyForm(button) {
             const parent = button.closest('div').parentNode;
-            
+
             // Remove any existing reply forms
             const existingForms = document.querySelectorAll('.reply-form');
             existingForms.forEach(form => form.remove());
-            
+
             // Create new reply form
             const replyForm = document.createElement('div');
             replyForm.className = 'mt-3 reply-form';
@@ -786,13 +826,13 @@ function closeVideoModal() {
             `;
             parent.appendChild(replyForm);
         }
-        
+
         // Submit reply
         function submitReply(button) {
             alert('Reply submitted!');
             button.closest('.reply-form').remove();
         }
-        
+
         // Bookmark functionality
         function toggleBookmark() {
             const icon = document.getElementById('bookmarkIcon');
@@ -804,7 +844,7 @@ function closeVideoModal() {
                 icon.classList.add('far');
             }
         }
-        
+
         // Share functionality
         function shareContent() {
             if (navigator.share) {
@@ -819,11 +859,12 @@ function closeVideoModal() {
                 alert('Share this course: ' + window.location.href);
             }
         }
-        
+
         // View instructor profile
         function viewInstructorProfile() {
             alert('Viewing instructor profile!');
         }
     </script>
 </body>
+
 </html>
