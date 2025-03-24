@@ -112,39 +112,51 @@
             <h2 class="text-2xl md:text-3xl font-bold text-center text-indigo-700 mb-6">Join Our Community Today</h2>
             <p class="text-center mb-6">Complete this quick form to join our WhatsApp community and get early access benefits:</p>
             
-            <form class="space-y-4">
+            <form class="space-y-4" method="POST" action="{{ route('submit-tech-form') }}">
+                @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label for="name" class="block text-gray-700 font-medium mb-1">Full Name</label>
-                        <input type="text" id="name" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Your full name" required>
+                        <label for="name" class="block text-gray-700 font-medium mb-1">Name</label>
+                        <input type="text" id="name" name="name" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Your name" required>
                     </div>
                     <div>
                         <label for="email" class="block text-gray-700 font-medium mb-1">Email Address</label>
-                        <input type="email" id="email" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Your email address" required>
+                        <input type="email" id="email" name="email" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Your email address" required>
                     </div>
                 </div>
                 
                 <div>
                     <label for="phone" class="block text-gray-700 font-medium mb-1">Phone Number (WhatsApp)</label>
-                    <input type="tel" id="phone" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Your WhatsApp number" required>
+                    <input type="tel" id="phone" name="phone" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Your WhatsApp number" required>
                 </div>
                 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Which tech career are you most interested in?</label>
-                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-                        <option value="">Select an option</option>
-                        <option value="web-dev">Web Development</option>
-                        <option value="mobile-dev">Mobile App Development</option>
-                        <option value="data-science">Data Science & AI</option>
-                        <option value="cybersecurity">Cybersecurity</option>
-                        <option value="ui-ux">UI/UX Design</option>
-                        <option value="other">Other</option>
-                    </select>
+                    <label class="block text-gray-700 font-medium mb-1">Which tech skills are you interested in learning? (Select all that apply)</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="skills[]" value="web-dev" class="mr-2"> Web Development
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="skills[]" value="mobile-dev" class="mr-2"> Mobile App Development
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="skills[]" value="data-science" class="mr-2"> Data Science & AI
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="skills[]" value="cybersecurity" class="mr-2"> Cybersecurity
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="skills[]" value="ui-ux" class="mr-2"> UI/UX Design
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="skills[]" value="other" class="mr-2"> Other
+                        </label>
+                    </div>
                 </div>
                 
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">What is your current level of experience in tech?</label>
-                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    <select name="experience_level" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
                         <option value="">Select an option</option>
                         <option value="beginner">Complete Beginner</option>
                         <option value="some-knowledge">Some Basic Knowledge</option>
@@ -152,10 +164,21 @@
                         <option value="advanced">Advanced</option>
                     </select>
                 </div>
-                
+            
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">What is your preferred language for learning?</label>
-                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    <label class="block text-gray-700 font-medium mb-1">How do you prefer to learn?</label>
+                    <select name="learning_preference" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <option value="">Select an option</option>
+                        <option value="videos">Video Courses</option>
+                        <option value="text">Text-Based Lessons</option>
+                        <option value="projects">Project-Based Learning</option>
+                        <option value="community">Community/Group Learning</option>
+                    </select>
+                </div>
+            
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Do you prefer courses in Hausa, English, or both?</label>
+                    <select name="language_preference" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
                         <option value="">Select an option</option>
                         <option value="hausa">Hausa</option>
                         <option value="english">English</option>
@@ -164,30 +187,18 @@
                 </div>
                 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">What is your education background?</label>
-                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-                        <option value="">Select an option</option>
-                        <option value="secondary">Secondary School</option>
-                        <option value="student">University/Polytechnic Student</option>
-                        <option value="graduate">Graduate</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                
-                <div>
                     <label class="block text-gray-700 font-medium mb-1">What device do you primarily use for learning?</label>
-                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    <select name="device_preference" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
                         <option value="">Select an option</option>
                         <option value="smartphone">Smartphone</option>
                         <option value="laptop">Laptop</option>
                         <option value="both">Both Smartphone and Laptop</option>
-                        <option value="other">Other</option>
                     </select>
                 </div>
-                
+            
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">What is your main goal for learning tech skills?</label>
-                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    <label class="block text-gray-700 font-medium mb-1">What is your main goal for learning tech?</label>
+                    <select name="learning_goal" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
                         <option value="">Select an option</option>
                         <option value="job">Get a job in Nigeria</option>
                         <option value="remote">Get a remote job</option>
@@ -196,30 +207,40 @@
                         <option value="skills">Just to improve my skills</option>
                     </select>
                 </div>
-                
+            
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">How did you hear about Koyify?</label>
-                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    <label class="block text-gray-700 font-medium mb-1">Do you prefer self-paced or tutor-led courses?</label>
+                    <select name="course_format_preference" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
                         <option value="">Select an option</option>
-                        <option value="social">Social Media</option>
-                        <option value="friend">Friend or Family</option>
-                        <option value="search">Search Engine</option>
-                        <option value="ads">Online Advertisement</option>
-                        <option value="other">Other</option>
+                        <option value="self-paced">Self-Paced</option>
+                        <option value="tutor-led">Tutor-Led</option>
+                        <option value="both">Both</option>
                     </select>
                 </div>
-                
+            
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">How soon do you want to start learning?</label>
-                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    <label class="block text-gray-700 font-medium mb-1">What price range do you think is reasonable for a course?</label>
+                    <input type="text" name="price_range" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter price range (e.g. ₦5,000 - ₦20,000)">
+                </div>
+            
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Would you be interested in mentorship and career guidance?</label>
+                    <select name="interested_in_mentorship" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
                         <option value="">Select an option</option>
-                        <option value="immediately">Immediately</option>
-                        <option value="month">Within a month</option>
-                        <option value="quarter">Within 3 months</option>
-                        <option value="planning">Just planning ahead</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
                     </select>
                 </div>
-                
+            
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Would you be interested in earning a certification?</label>
+                    <select name="interested_in_certification" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <option value="">Select an option</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+            
                 <div class="text-center pt-4">
                     <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105 shadow-lg">
                         <i class="fab fa-whatsapp mr-2"></i> Join WhatsApp Community

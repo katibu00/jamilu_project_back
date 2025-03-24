@@ -13,6 +13,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PurchaseCourseController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TechCareerController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
 
@@ -87,6 +88,13 @@ Route::get('/home', function () {
     }
 });
 
+
+
+
+
+Route::get('/get-into-tech', [TechCareerController::class, 'showForm'])->name('get-into-tech');
+Route::post('/get-into-tech', [TechCareerController::class, 'submitForm'])->name('submit-tech-form');
+Route::get('/thank-you', [TechCareerController::class, 'thankYou'])->name('thank-you');
 
 
 // routes/web.php
